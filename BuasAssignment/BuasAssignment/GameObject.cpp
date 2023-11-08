@@ -16,8 +16,8 @@ GameObject::GameObject(const std::string& spriteFile):
 		spriteOrigin = _sprite.getOrigin();
 		
 
-	//draw collider
-		_collider.setSize(_sprite.getGlobalBounds().getSize());
+	//make collider shape & resize it
+		_collider.setSize(_sprite.getGlobalBounds().getSize() - sf::Vector2f{30.f, 0.f});
 		_collider.setOutlineColor(sf::Color::White);
 		_collider.setOutlineThickness(colliderDrawThickness);
 		_collider.setFillColor(sf::Color::Transparent);
@@ -59,7 +59,7 @@ void GameObject::Update(float deltaTime)
 	{
 		if(MathFunctions::GetSqrDistance(objectPosition, tiles->GetSprite()->getPosition()) < _collisionDistance)
 		{
-			if (_sprite.getGlobalBounds().intersects(tiles->GetSprite()->getGlobalBounds()))
+			if (_collider.getGlobalBounds().intersects(tiles->GetSprite()->getGlobalBounds()))
 			{
 				_colliding = true;
 				break;
@@ -149,7 +149,7 @@ void GameObject::FlipSprite(float originalScaleX)
 	if (_velocity.x < 0)
 	{
 		newScaleX = -originalScaleX;
-		widthOrigin = _sprite.getLocalBounds().width;
+		widthOrigin = _sprite.getLocalBounds().width / 1.75f; // division to center sprite after flipping
 	}
 
 	if (objectScale.x != newScaleX)
