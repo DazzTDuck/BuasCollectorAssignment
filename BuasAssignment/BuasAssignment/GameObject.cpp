@@ -18,8 +18,10 @@ GameObject::GameObject(const std::string& spriteFile):
 
 	//make collider shape & resize it
 		_collider.setSize(_sprite.getGlobalBounds().getSize() - sf::Vector2f{30.f, 0.f});
+
 		_collider.setOutlineColor(sf::Color::White);
 		_collider.setOutlineThickness(colliderDrawThickness);
+
 		_collider.setFillColor(sf::Color::Transparent);
 	}
 
@@ -47,11 +49,14 @@ void GameObject::Update(float deltaTime)
 	_sprite.setScale(objectScale);
 	_sprite.setOrigin(spriteOrigin);
 
-	if (drawCollider)
-		_collider.setPosition(objectPosition);
+	//make collider follow sprite
+	_collider.setPosition(objectPosition);
 
+	//handle flipping
 	FlipSprite(2.f);
 
+
+	//collision check
 	_colliding = false;
 
 	//collision checking by distance
