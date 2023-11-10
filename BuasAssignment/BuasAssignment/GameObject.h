@@ -1,13 +1,14 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
+#include "Animations.h"
 
 class Game;
 
 class GameObject
 {
 public:
-	GameObject(const std::string& spriteFile);
+	GameObject();
 
 	sf::Vector2f objectScale = sf::Vector2f(2.f, 2.f);
 	sf::Vector2f objectPosition = sf::Vector2f(150.f, 100.f);
@@ -42,9 +43,16 @@ private:
 	sf::Vector2f _acceleration = sf::Vector2f(0.f, 0.f);
 	float _collisionDistance = 15000.f;
 	bool _colliding = false;
+	int animationStep = 1;
+	int maxAnimationStep = 4;
+	float frameTime = (1.f / 8.f);
+	float frames = 0;
 
-	sf::Texture _texture;
+	sf::Texture _idleTexture;
+	sf::Texture _runTexture;
 	sf::Sprite _sprite;
 	sf::RectangleShape _collider;
+	Animations _idleAnimation;
+	Animations _runAnimation;
 };
 

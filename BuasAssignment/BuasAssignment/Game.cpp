@@ -18,7 +18,7 @@ Game::Game() : // constructor
 
 void Game::Start()
 {
-	GameObject* player = CreateGameObject("player", "Assets/Character/Idle/Idle-Sheet.png");
+	GameObject* player = CreateGameObject("player");
 
 	for (auto pair : objectsList)
 	{
@@ -109,9 +109,9 @@ void Game::HandlePlayerInputs(sf::Keyboard::Key key, bool isPressed)
 	}
 }
 
-GameObject* Game::CreateGameObject(const std::string& objectName, const std::string& spriteFile)
+GameObject* Game::CreateGameObject(const std::string& objectName)
 {
-	GameObject* newObject = new GameObject(spriteFile);
+	GameObject* newObject = new GameObject();
 	newObject->game = this; //reference game class
 
 	objectsList[objectName] = newObject;

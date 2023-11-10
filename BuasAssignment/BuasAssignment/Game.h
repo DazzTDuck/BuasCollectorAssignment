@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "TileHandler.h"
 #include "TileObject.h"
+#include <random>
 
 #define GRAVITY (9.81f)
 
@@ -12,7 +13,7 @@ public:
 	Game();
 	void Run();
 	void Start();
-	GameObject* CreateGameObject(const std::string& objectName, const std::string& spriteFile);
+	GameObject* CreateGameObject(const std::string& objectName);
 	void CreateGameTile(sf::Vector2f position, TileTypes type);
 
 	std::map<std::string, GameObject*> objectsList;

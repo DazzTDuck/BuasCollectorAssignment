@@ -1,34 +1,37 @@
 #include "GameObject.h"
-
 #include "Game.h"
 #include "MathFunctions.h"
+#include <iostream>
 
-GameObject::GameObject(const std::string& spriteFile):
-	_texture(),
+GameObject::GameObject():
+	_idleTexture(),
+	_runTexture(),
 	_sprite(),
-	_collider()
+	_collider(),
+	_idleAnimation(4),
+	_runAnimation(8)
 	{
-		_texture.loadFromFile(spriteFile);
-		_sprite.setTexture(_texture);
-		_sprite.setTextureRect(sf::IntRect(22, 16, 35, 48));
+		_idleTexture.loadFromFile("Assets/Character/Idle/Idle-Sheet.png");
+		_runTexture.loadFromFile("Assets/Character/Run/Run-Sheet.png");
+
+		_sprite.setTexture(_idleTexture);
+		_sprite.setTextureRect({ 22, 16, 35, 48 });
 		_sprite.setPosition(objectPosition);
 		_sprite.setScale(objectScale);
 		spriteOrigin = _sprite.getOrigin();
 		
-
-	//make collider shape & resize it
+		//make collider shape & resize it
 		_collider.setSize(_sprite.getGlobalBounds().getSize() - sf::Vector2f{30.f, 0.f});
 
 		_collider.setOutlineColor(sf::Color::White);
 		_collider.setOutlineThickness(colliderDrawThickness);
-
 		_collider.setFillColor(sf::Color::Transparent);
 	}
 
 
 void GameObject::Start()
 {
-	
+
 }
 
 
@@ -54,6 +57,18 @@ void GameObject::Update(float deltaTime)
 
 	//handle flipping
 	FlipSprite(2.f);
+
+	//handle animation & texture swapping
+	if (abs(_velocity.x) > 0)
+	{	
+		if(_runAnimation.PlayAnimation("PlayerRun", _sprite, deltaTime))
+			_sprite.setTexture(_runTexture);
+	}
+	else 
+	{	
+		if(_idleAnimation.PlayAnimation("PlayerIdle", _sprite, deltaTime))
+			_sprite.setTexture(_idleTexture);
+	}
 
 
 	//collision check

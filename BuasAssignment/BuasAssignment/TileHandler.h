@@ -1,6 +1,4 @@
 #pragma once
-#include <random>
-#include <SFML/Graphics/Texture.hpp>
 
 #include "TileObject.h"
 
@@ -16,7 +14,6 @@ enum TileTypes
 class TileHandler
 {
 public:
-
 	TileHandler();
 
 	TileObject* CreateNewTile(sf::Vector2f position, TileTypes tileType);

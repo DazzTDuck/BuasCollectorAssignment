@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Classes\World">
       <UniqueIdentifier>{19e1836e-ab98-4715-8054-83ca1c49029b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Classes\Animations">
+      <UniqueIdentifier>{e4f527b6-ad67-42fb-a912-a5efebbb4244}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -45,6 +48,9 @@
     <ClCompile Include="TileHandler.cpp">
       <Filter>Source Files\Classes\World</Filter>
     </ClCompile>
+    <ClCompile Include="Animations.cpp">
+      <Filter>Source Files\Classes\Animations</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -63,6 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TileHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
