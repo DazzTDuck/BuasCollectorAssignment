@@ -7,7 +7,7 @@ class Animations
 public:
 	Animations(int amountOfFrames);
 
-	bool PlayAnimation(const std::string animation, sf::Sprite& sprite, float deltaTime);
+	bool PlayAnimation(const std::string& animation, sf::Sprite& sprite, float deltaTime);
 
 	static const std::map<std::string, sf::IntRect> animations;
 

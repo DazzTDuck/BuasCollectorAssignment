@@ -43,16 +43,16 @@ private:
 	sf::Vector2f _acceleration = sf::Vector2f(0.f, 0.f);
 	float _collisionDistance = 15000.f;
 	bool _colliding = false;
-	int animationStep = 1;
-	int maxAnimationStep = 4;
-	float frameTime = (1.f / 8.f);
-	float frames = 0;
+
+	sf::Sprite _sprite;
+	sf::RectangleShape _collider;
 
 	sf::Texture _idleTexture;
 	sf::Texture _runTexture;
-	sf::Sprite _sprite;
-	sf::RectangleShape _collider;
+	sf::Texture _jumpTexture;
+
 	Animations _idleAnimation;
 	Animations _runAnimation;
+	Animations _jumpAnimation;
 };
 

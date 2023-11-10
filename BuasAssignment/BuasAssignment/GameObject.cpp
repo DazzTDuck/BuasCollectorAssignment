@@ -4,15 +4,18 @@
 #include <iostream>
 
 GameObject::GameObject():
-	_idleTexture(),
-	_runTexture(),
 	_sprite(),
 	_collider(),
+	_idleTexture(),
+	_runTexture(),
+	_jumpTexture(),
 	_idleAnimation(4),
-	_runAnimation(8)
+	_runAnimation(8),
+	_jumpAnimation(2)
 	{
 		_idleTexture.loadFromFile("Assets/Character/Idle/Idle-Sheet.png");
 		_runTexture.loadFromFile("Assets/Character/Run/Run-Sheet.png");
+		_jumpTexture.loadFromFile("Assets/Character/Jump-All/Jump-All-Sheet.png");
 
 		_sprite.setTexture(_idleTexture);
 		_sprite.setTextureRect({ 22, 16, 35, 48 });
@@ -55,16 +58,21 @@ void GameObject::Update(float deltaTime)
 	//make collider follow sprite
 	_collider.setPosition(objectPosition);
 
-	//handle flipping
+	//handle flipping of sprite based on movement speed
 	FlipSprite(2.f);
 
 	//handle animation & texture swapping
-	if (abs(_velocity.x) > 0)
+	if(!_colliding)
+	{
+		if (_jumpAnimation.PlayAnimation("PlayerJumpAir", _sprite, deltaTime))
+			_sprite.setTexture(_jumpTexture);
+	}
+	else if (abs(_velocity.x) > 0.f)
 	{	
 		if(_runAnimation.PlayAnimation("PlayerRun", _sprite, deltaTime))
 			_sprite.setTexture(_runTexture);
 	}
-	else 
+	else if (abs(_velocity.x) == 0.f)
 	{	
 		if(_idleAnimation.PlayAnimation("PlayerIdle", _sprite, deltaTime))
 			_sprite.setTexture(_idleTexture);
@@ -111,6 +119,8 @@ void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, bool onlyCollid
 
 void GameObject::CheckOutOfBounds(sf::RenderWindow& window)
 {
+	//TODO calculate world offset if player goes too far left or right
+
 	sf::FloatRect bounds = _sprite.getGlobalBounds();
 
 	//keep object from moving out of bounds
@@ -123,11 +133,12 @@ void GameObject::CheckOutOfBounds(sf::RenderWindow& window)
 	if (objectPosition.x + bounds.width > window.getSize().x) 
 		objectPosition.x = window.getSize().x - bounds.width;
 
+
 	if (objectPosition.y + bounds.height > window.getSize().y)
 	{
 		//re spawn player
 		objectPosition = { 150.f , 100.f };
-		SetVelocity({ 0.f, 0.f });
+		SetVelocity({ 0.f, 0.f }); //reset velocity 
 	} 
 		
 }
@@ -158,6 +169,7 @@ void GameObject::SetVelocityY(float y)
 	_velocity.y = y;
 }
 
+///Flips sprite on scale and re-alines origin to match same position, based on the velocity X
 void GameObject::FlipSprite(float originalScaleX)
 {
 	float newScaleX = objectScale.x;

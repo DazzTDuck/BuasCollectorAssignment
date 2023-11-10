@@ -31,7 +31,7 @@ private:
 	sf::Vector2f _playerScale = sf::Vector2f(2.f, 2.f);
 	sf::Time _timePerFrame =  sf::seconds(1.f / 60.f);
 	float _playerSpeed = 250.f;
-	float _jumpHeight = 15.f;
+	float _jumpHeight = 10.f;
 	float _jumpTime = 0.05f;
 
 	bool _wKeyPressed = false;
