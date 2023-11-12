@@ -41,11 +41,15 @@ private:
 
 	sf::Vector2f _velocity = sf::Vector2f(0.f, 0.f);
 	sf::Vector2f _acceleration = sf::Vector2f(0.f, 0.f);
-	float _collisionDistance = 15000.f;
-	bool _colliding = false;
+	sf::Vector2f _overlapCollision;
+
+	bool _grounded = false;
+	const float _minSqrCollisionOverlap = 4.f * 4.f; //4 pixels
 
 	sf::Sprite _sprite;
 	sf::RectangleShape _collider;
+	sf::Vector2f _pointL = {0.f, 0.f};
+	sf::Vector2f _pointR = { 0.f, 0.f };
 
 	sf::Texture _idleTexture;
 	sf::Texture _runTexture;

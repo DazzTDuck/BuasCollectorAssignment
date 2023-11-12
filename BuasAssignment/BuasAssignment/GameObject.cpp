@@ -41,28 +41,20 @@ void GameObject::Start()
 void GameObject::Update(float deltaTime)
 {
 	//Add gravity force
-	ApplyForce(sf::Vector2f(0.f, GRAVITY * objectMass * static_cast<float>(!_colliding)), deltaTime);
+	ApplyForce(sf::Vector2f(0.f, GRAVITY * objectMass * static_cast<float>(!_grounded)), deltaTime);
 
-	if(_colliding && _velocity.y > 0) //stop player if colliding with something
+	if(_grounded && _velocity.y > 0) //stop player if colliding with something
 	{
 		SetVelocityY(0.f);
 	}
 
 	objectPosition += _velocity; //update position with velocity
 
-	//update sprite position and scale
-	_sprite.setPosition(objectPosition);
-	_sprite.setScale(objectScale);
-	_sprite.setOrigin(spriteOrigin);
-
-	//make collider follow sprite
-	_collider.setPosition(objectPosition);
-
 	//handle flipping of sprite based on movement speed
 	FlipSprite(2.f);
 
 	//handle animation & texture swapping
-	if(!_colliding)
+	if(!_grounded)
 	{
 		if (_jumpAnimation.PlayAnimation("PlayerJumpAir", _sprite, deltaTime))
 			_sprite.setTexture(_jumpTexture);
@@ -78,22 +70,37 @@ void GameObject::Update(float deltaTime)
 			_sprite.setTexture(_idleTexture);
 	}
 
-
 	//collision check
-	_colliding = false;
+	_grounded = false;
 
-	//collision checking by distance
-	for (auto tiles : game->activeTiles)
+	//make collider follow sprite
+	_collider.setPosition(objectPosition);
+
+	for (auto tileObject : game->activeTiles)
 	{
-		if(MathFunctions::GetSqrDistance(objectPosition, tiles->GetSprite()->getPosition()) < _collisionDistance)
+		if(!_grounded)
+			_grounded = MathFunctions::IsPointInBounds(_pointR, tileObject->GetSprite()->getGlobalBounds()) || 
+				MathFunctions::IsPointInBounds(_pointL, tileObject->GetSprite()->getGlobalBounds());
+
+		if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), tileObject->GetSprite()->getGlobalBounds(), _overlapCollision))
 		{
-			if (_collider.getGlobalBounds().intersects(tiles->GetSprite()->getGlobalBounds()))
+			if(MathFunctions::SqrMagnitude(_overlapCollision) > _minSqrCollisionOverlap)
 			{
-				_colliding = true;
-				break;
+				//add overlap to player to set it to the correct position
+				objectPosition -= _overlapCollision;
+				_collider.setPosition(objectPosition);
 			}
 		}
 	}
+
+	//update sprite position and scale
+	_sprite.setPosition(objectPosition);
+	_sprite.setScale(objectScale);
+	_sprite.setOrigin(spriteOrigin);
+
+	//set ground collision points
+	_pointL = (objectPosition + sf::Vector2f(5.f, _collider.getGlobalBounds().height + 1));
+	_pointR = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width - 5.f, _collider.getGlobalBounds().height + 1));
 }
 
 void GameObject::Draw(sf::RenderWindow& window)
@@ -106,7 +113,7 @@ void GameObject::Draw(sf::RenderWindow& window)
 
 void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, bool onlyColliding)
 {
-	if (onlyColliding && !_colliding)
+	if (onlyColliding && !_grounded)
 		return;
 
 	//value makes sure the speed will never go faster than a certain amount

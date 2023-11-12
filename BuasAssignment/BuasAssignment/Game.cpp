@@ -8,12 +8,9 @@ using namespace sf;
 
 Game::Game() : // constructor
 	_gameWindow(VideoMode(1280, 720), "Collector"),
-	_tileTexture(),
 	_tileHandler(),
 	_generator()
 {
-	_tileTexture.loadFromFile("Assets/Assets/Tiles.png");
-	_tileTexture.setRepeated(true);
 };
 
 void Game::Start()
@@ -31,14 +28,47 @@ void Game::Start()
 	std::vector<TileTypes> tileTypes = { Grass_MiddleA, Grass_MiddleB, Grass_MiddleC };
 	std::shuffle(tileTypes.begin(), tileTypes.end(), _generator);
 
-	for (int i = 1; i < 29; i++)
+	for (int i = 1; i < 59; i++)
 	{
 		TileTypes randomType = tileTypes[i % tileTypes.size()];
 
 		CreateGameTile(Vector2f(80 + 16 * i, 400), randomType);
 	}
 
-	CreateGameTile(Vector2f(544, 400), Grass_End);
+	CreateGameTile(Vector2f(1024, 400), Grass_End);
+
+
+	for (int i = 1; i < 10; i++)
+	{
+		CreateGameTile(Vector2f(1024, 400 - 23 * i), Grass_End);
+	}
+
+	//-- create test collider --
+
+	RectangleShape* testCollider = new RectangleShape;
+	RectangleShape* testWall = new RectangleShape;
+
+	testCollider->setSize(Vector2f(0.f, activeTiles[0]->GetSprite()->getGlobalBounds().getSize().y));
+
+	for (auto tile : activeTiles)
+	{
+		testCollider->setSize(testCollider->getSize() + Vector2f(tile->GetSprite()->getGlobalBounds().getSize().x, 0.f));
+	}
+
+
+	testCollider->setPosition(Vector2f(80, 400));
+	testCollider->setOutlineColor(Color::White);
+	testCollider->setOutlineThickness(1.f);
+	testCollider->setFillColor(Color::Transparent);
+
+	testWall->setSize({ 16.f, 16.f * -10.f });
+	testWall->setPosition(Vector2f(80, 400));
+	testWall->setOutlineColor(Color::White);
+	testWall->setOutlineThickness(1.f);
+	testWall->setFillColor(Color::Transparent);
+
+	//allColls.push_back(testCollider);
+	//allColls.push_back(testWall);
 }
 
 void Game::Run()
@@ -155,6 +185,11 @@ void Game::Render()
 {
 	_gameWindow.clear();
 
+	for (RectangleShape* coll : allColls)
+	{
+		_gameWindow.draw(*coll);
+	}
+
 	for (TileObject* tile : activeTiles)
 	{
 		tile->Draw(_gameWindow);
@@ -178,5 +213,10 @@ Game::~Game()
 	for (auto tile : activeTiles)
 	{
 		delete tile;
+	}
+
+	for (auto coll : allColls)
+	{
+		delete coll;
 	}
 }

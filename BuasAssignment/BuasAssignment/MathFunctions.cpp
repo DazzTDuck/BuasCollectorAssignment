@@ -1,5 +1,7 @@
 #include "MathFunctions.h"
 #include <cmath>
+#include <iostream>
+#include <string>
 
 sf::Vector2f MathFunctions::Normalize(sf::Vector2f vector2)
 {
@@ -34,3 +36,53 @@ float MathFunctions::Clamp01(float value)
 	return value;
 }
 
+
+bool MathFunctions::AreBoundsColliding(sf::FloatRect aRect, sf::FloatRect bRect, sf::Vector2f& penetration)
+{
+	sf::FloatRect minkowskiDifference;
+
+	minkowskiDifference.top = aRect.top - (bRect.top + bRect.height);
+	minkowskiDifference.height = aRect.height + bRect.height;
+	minkowskiDifference.left = aRect.left - (bRect.left + bRect.width);
+	minkowskiDifference.width = aRect.width + bRect.width;
+
+	if(minkowskiDifference.contains(0, 0))
+	{
+		float min = FLT_MAX;
+
+		if (abs(minkowskiDifference.left) < min)
+		{
+			min = abs(minkowskiDifference.left);
+			penetration = { minkowskiDifference.left, 0.f };
+		}
+
+		if (abs(minkowskiDifference.left + minkowskiDifference.width) < min)
+		{
+			min = abs(minkowskiDifference.left + minkowskiDifference.width);
+			penetration = { minkowskiDifference.left + minkowskiDifference.width , 0.f };
+		}
+
+		if (abs(minkowskiDifference.top) < min)
+		{
+			min = abs(minkowskiDifference.top);
+			penetration = { 0.f , minkowskiDifference.top };
+		}
+
+		if (abs(minkowskiDifference.top + minkowskiDifference.height) < min)
+		{
+			min = abs(minkowskiDifference.top + minkowskiDifference.height);
+			penetration = { 0.f , minkowskiDifference.top + minkowskiDifference.height };
+		}
+
+		return true;
+	}
+
+	penetration = { 0.f, 0.f };
+	return false;
+}
+
+bool MathFunctions::IsPointInBounds(sf::Vector2f point, sf::FloatRect box)
+{
+	return point.x >= box.left && point.x <= box.left + box.width &&
+		point.y >= box.top && point.y <= box.top + box.height;
+}

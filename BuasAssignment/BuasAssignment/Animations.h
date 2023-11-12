@@ -18,4 +18,3 @@ private:
 	float _frameTime = (1.f / 8.f);
 	float _frames = 0;
 };
-

@@ -18,6 +18,7 @@ public:
 
 	std::map<std::string, GameObject*> objectsList;
 	std::vector<TileObject*> activeTiles;
+	std::vector<sf::RectangleShape*> allColls;
 
 	~Game();
 
@@ -30,7 +31,7 @@ private:
 	sf::Vector2f _playerSize = sf::Vector2f(60.f, 100.f);
 	sf::Vector2f _playerScale = sf::Vector2f(2.f, 2.f);
 	sf::Time _timePerFrame =  sf::seconds(1.f / 60.f);
-	float _playerSpeed = 250.f;
+	float _playerSpeed = 310.f;
 	float _jumpHeight = 10.f;
 	float _jumpTime = 0.05f;
 
@@ -41,7 +42,6 @@ private:
 	bool _spacePressed = false;
 
 	sf::RenderWindow _gameWindow;
-	sf::Texture _tileTexture;
 	TileHandler _tileHandler;
 	std::default_random_engine _generator;
 
