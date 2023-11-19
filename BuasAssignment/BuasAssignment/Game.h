@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "TileHandler.h"
 #include "TileObject.h"
+#include "GameInput.h"
 #include <random>
 
 #define GRAVITY (9.81f)
@@ -18,15 +19,13 @@ public:
 
 	std::map<std::string, GameObject*> objectsList;
 	std::vector<TileObject*> activeTiles;
-	std::vector<sf::RectangleShape*> allColls;
 
 	~Game();
 
 private:
 	void Update(float deltaTime);
 	void Render();
-	void ProcessEvents();
-	void HandlePlayerInputs(sf::Keyboard::Key key, bool isPressed);
+	void EventHandler();
 
 	sf::Vector2f _playerSize = sf::Vector2f(60.f, 100.f);
 	sf::Vector2f _playerScale = sf::Vector2f(2.f, 2.f);
@@ -35,14 +34,7 @@ private:
 	float _jumpHeight = 10.f;
 	float _jumpTime = 0.05f;
 
-	bool _wKeyPressed = false;
-	bool _aKeyPressed = false;
-	bool _sKeyPressed = false;
-	bool _dKeyPressed = false;
-	bool _spacePressed = false;
-
 	sf::RenderWindow _gameWindow;
-	TileHandler _tileHandler;
 	std::default_random_engine _generator;
-
+	TileHandler _tileHandler;
 };
