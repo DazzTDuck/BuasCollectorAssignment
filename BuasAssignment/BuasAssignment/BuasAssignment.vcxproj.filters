@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Classes\Animations">
       <UniqueIdentifier>{e4f527b6-ad67-42fb-a912-a5efebbb4244}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Classes\Objects">
+      <UniqueIdentifier>{888a42f1-f655-44b0-b999-353f6317ebf1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -54,6 +57,9 @@
     <ClCompile Include="GameInput.cpp">
       <Filter>Source Files\Classes\Game</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerObject.cpp">
+      <Filter>Source Files\Classes\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -78,6 +84,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

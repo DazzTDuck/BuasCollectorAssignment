@@ -6,26 +6,18 @@
 GameObject::GameObject():
 	_sprite(),
 	_collider(),
-	_idleTexture(),
-	_runTexture(),
-	_jumpTexture(),
-	_idleAnimation(4),
-	_runAnimation(8),
-	_jumpAnimation(2)
+	_defaultTexture()
 	{
-		_idleTexture.loadFromFile("Assets/Character/Idle/Idle-Sheet.png");
-		_runTexture.loadFromFile("Assets/Character/Run/Run-Sheet.png");
-		_jumpTexture.loadFromFile("Assets/Character/Jump-All/Jump-All-Sheet.png");
+		_defaultTexture.loadFromFile("Assets/Assets/Props-Rocks.png");
 
-		_sprite.setTexture(_idleTexture);
-		_sprite.setTextureRect({ 22, 16, 35, 48 });
+		_sprite.setTexture(_defaultTexture);
+		_sprite.setTextureRect({176, 0, 16, 16}); //a rock as the default object
 		_sprite.setPosition(objectPosition);
 		_sprite.setScale(objectScale);
 		spriteOrigin = _sprite.getOrigin();
 		
 		//make collider shape & resize it
-		_collider.setSize(_sprite.getGlobalBounds().getSize() - sf::Vector2f{30.f, 0.f});
-
+		_collider.setSize(_sprite.getGlobalBounds().getSize());
 		_collider.setOutlineColor(sf::Color::White);
 		_collider.setOutlineThickness(colliderDrawThickness);
 		_collider.setFillColor(sf::Color::Transparent);
@@ -34,7 +26,6 @@ GameObject::GameObject():
 
 void GameObject::Start()
 {
-
 }
 
 
@@ -49,26 +40,6 @@ void GameObject::Update(float deltaTime)
 	}
 
 	objectPosition += _velocity; //update position with velocity
-
-	//handle flipping of sprite based on movement speed
-	FlipSprite(2.f);
-
-	//handle animation & texture swapping
-	if(!_grounded)
-	{
-		if (_jumpAnimation.PlayAnimation("PlayerJumpAir", _sprite, deltaTime))
-			_sprite.setTexture(_jumpTexture);
-	}
-	else if (abs(_velocity.x) > 0.f)
-	{	
-		if(_runAnimation.PlayAnimation("PlayerRun", _sprite, deltaTime))
-			_sprite.setTexture(_runTexture);
-	}
-	else if (abs(_velocity.x) == 0.f)
-	{	
-		if(_idleAnimation.PlayAnimation("PlayerIdle", _sprite, deltaTime))
-			_sprite.setTexture(_idleTexture);
-	}
 
 	//collision check
 	_grounded = false;
@@ -143,8 +114,8 @@ void GameObject::CheckOutOfBounds(sf::RenderWindow& window)
 
 	if (objectPosition.y + bounds.height > window.getSize().y)
 	{
-		//re spawn player
-		objectPosition = { 150.f , 100.f };
+		//respawn object
+		objectPosition = { objectPosition.x , 200.f };
 		SetVelocity({ 0.f, 0.f }); //reset velocity 
 	} 
 		

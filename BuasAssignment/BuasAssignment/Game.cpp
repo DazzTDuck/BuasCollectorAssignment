@@ -3,6 +3,7 @@
 #include <random>
 #include "MathFunctions.h"
 #include "GameInput.h"
+#include "PlayerObject.h"
 using namespace sf;
 
 //started 11/2
@@ -19,14 +20,15 @@ void Game::Start()
 	//initialize keyboard inputs
 	Input::InitializeInputs();
 
-	GameObject* player = CreateGameObject("player");
+	PlayerObject* player = new PlayerObject();
+	objectsList["player"] = player;
 
 	for (auto pair : objectsList)
 	{
 		pair.second->Start();
 	}
 
-	//create game tiles
+	//create temp game tiles
 	CreateGameTile(Vector2f(80, 400), Grass_Begin);
 
 	std::vector<TileTypes> tileTypes = { Grass_MiddleA, Grass_MiddleB, Grass_MiddleC };
@@ -108,29 +110,7 @@ void Game::CreateGameTile(Vector2f position, TileTypes type)
 
 void Game::Update(float deltaTime)
 {
-	float moveX = 0.f;
-
-	if (Input::GetInput(Keyboard::A))
-		moveX -= 1.f; //left
-	if (Input::GetInput(Keyboard::D))
-		moveX += 1.f; //right
-
-	objectsList["player"]->SetVelocityX(moveX * _playerSpeed * deltaTime);
-
-	//jumping
-	if(Input::GetInput(Keyboard::Space))
-	{
-		float jumpVelocity = -sqrt(2 * GRAVITY * _jumpHeight);
-
-		Vector2f force(0.f, 0.f);
-		force.y = objectsList["player"]->objectMass * jumpVelocity / _jumpTime;
-
-		objectsList["player"]->ApplyForce(force, deltaTime, true);
-
-		_spacePressed = false;
-	}
-
-	objectsList["player"]->CheckOutOfBounds(_gameWindow);
+	
 }
 
 void Game::Render()
