@@ -5,7 +5,7 @@ class PlayerObject : public GameObject
 {
 
 public:
-	PlayerObject();
+	explicit PlayerObject(Game* game);
 
 
 	void Update(float deltaTime) override;
@@ -14,8 +14,9 @@ public:
 private:
 
 	float _playerSpeed = 310.f;
-	float _jumpHeight = 10.f;
+	float _jumpHeight = 4.f;
 	float _jumpTime = 0.05f;
+	bool _jumped = false;
 
 	sf::Texture _idleTexture;
 	sf::Texture _runTexture;

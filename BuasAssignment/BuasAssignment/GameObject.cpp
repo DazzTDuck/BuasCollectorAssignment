@@ -3,11 +3,13 @@
 #include "MathFunctions.h"
 #include <iostream>
 
-GameObject::GameObject():
-	_sprite(),
+GameObject::GameObject(Game* game):
 	_collider(),
+	_sprite(),
 	_defaultTexture()
 	{
+		this->_game = game;
+
 		_defaultTexture.loadFromFile("Assets/Assets/Props-Rocks.png");
 
 		_sprite.setTexture(_defaultTexture);
@@ -47,7 +49,7 @@ void GameObject::Update(float deltaTime)
 	//make collider follow sprite
 	_collider.setPosition(objectPosition);
 
-	for (auto tileObject : game->activeTiles)
+	for (auto tileObject : _game->activeTiles)
 	{
 		if(!_grounded)
 			_grounded = MathFunctions::IsPointInBounds(_pointR, tileObject->GetSprite()->getGlobalBounds()) || 
@@ -72,6 +74,8 @@ void GameObject::Update(float deltaTime)
 	//set ground collision points
 	_pointL = (objectPosition + sf::Vector2f(5.f, _collider.getGlobalBounds().height + 1));
 	_pointR = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width - 5.f, _collider.getGlobalBounds().height + 1));
+
+	CheckOutOfBounds(_game->gameWindow);
 }
 
 void GameObject::Draw(sf::RenderWindow& window)
@@ -105,9 +109,6 @@ void GameObject::CheckOutOfBounds(sf::RenderWindow& window)
 	if (objectPosition.x < 0) 
 		objectPosition.x = 0;
 
-	if (objectPosition.y < 0) 
-		objectPosition.y = 0;
-
 	if (objectPosition.x + bounds.width > window.getSize().x) 
 		objectPosition.x = window.getSize().x - bounds.width;
 
@@ -115,7 +116,7 @@ void GameObject::CheckOutOfBounds(sf::RenderWindow& window)
 	if (objectPosition.y + bounds.height > window.getSize().y)
 	{
 		//respawn object
-		objectPosition = { objectPosition.x , 200.f };
+		objectPosition = { objectPosition.x , 100.f };
 		SetVelocity({ 0.f, 0.f }); //reset velocity 
 	} 
 		

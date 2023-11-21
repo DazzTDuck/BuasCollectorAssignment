@@ -20,6 +20,8 @@ public:
 	std::map<std::string, GameObject*> objectsList;
 	std::vector<TileObject*> activeTiles;
 
+	sf::RenderWindow gameWindow;
+
 	~Game();
 
 private:
@@ -29,7 +31,6 @@ private:
 
 	sf::Time _timePerFrame =  sf::seconds(1.f / 60.f);
 
-	sf::RenderWindow _gameWindow;
 	std::default_random_engine _generator;
 	TileHandler _tileHandler;
 };

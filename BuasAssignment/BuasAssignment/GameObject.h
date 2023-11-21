@@ -8,7 +8,7 @@ class Game;
 class GameObject
 {
 public:
-	GameObject();
+	explicit GameObject(Game* game);
 
 	sf::Vector2f objectScale = sf::Vector2f(2.f, 2.f);
 	sf::Vector2f objectPosition = sf::Vector2f(500.f, 100.f);
@@ -32,11 +32,11 @@ public:
 	virtual void Start();
 	virtual void Draw(sf::RenderWindow& window);
 
-	Game* game = nullptr;
-
 	virtual ~GameObject();
 
 protected:
+
+	Game* _game = nullptr;
 
 	sf::Vector2f _velocity = sf::Vector2f(0.f, 0.f);
 	sf::Vector2f _acceleration = sf::Vector2f(0.f, 0.f);

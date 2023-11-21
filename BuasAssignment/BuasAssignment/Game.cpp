@@ -9,7 +9,7 @@ using namespace sf;
 //started 11/2
 
 Game::Game() : // constructor
-	_gameWindow(VideoMode(1280, 720), "Collector"),
+	gameWindow(VideoMode(1280, 720), "Collector"),
 	_generator(),
 	_tileHandler()
 {
@@ -20,15 +20,17 @@ void Game::Start()
 	//initialize keyboard inputs
 	Input::InitializeInputs();
 
-	PlayerObject* player = new PlayerObject();
+	PlayerObject* player = new PlayerObject(this);
 	objectsList["player"] = player;
+
+	GameObject* stone = CreateGameObject("Stone"); //temp stone
 
 	for (auto pair : objectsList)
 	{
 		pair.second->Start();
 	}
 
-	//create temp game tiles
+	//create temp _game tiles
 	CreateGameTile(Vector2f(80, 400), Grass_Begin);
 
 	std::vector<TileTypes> tileTypes = { Grass_MiddleA, Grass_MiddleB, Grass_MiddleC };
@@ -54,7 +56,7 @@ void Game::Run()
 	Clock clock;
 	Time timeSinceLastUpdate = Time::Zero;
 
-	while (_gameWindow.isOpen())
+	while (gameWindow.isOpen())
 	{
 		EventHandler();
 		timeSinceLastUpdate += clock.restart();
@@ -78,15 +80,15 @@ void Game::Run()
 void Game::EventHandler()
 {
 	Event event;
-	while (_gameWindow.pollEvent(event))
+	while (gameWindow.pollEvent(event))
 	{
 		//handle input events to set them correctly
-		Input::InputHandler(_gameWindow, event);
+		Input::InputHandler(gameWindow, event);
 
 		switch (event.type)
 		{
 			case Event::Closed:
-				_gameWindow.close();
+				gameWindow.close();
 				break;
 		}
 	}
@@ -95,9 +97,7 @@ void Game::EventHandler()
 
 GameObject* Game::CreateGameObject(const std::string& objectName)
 {
-	GameObject* newObject = new GameObject();
-	newObject->game = this; //reference game class
-
+	GameObject* newObject = new GameObject(this);
 	objectsList[objectName] = newObject;
 
 	return newObject;
@@ -115,19 +115,19 @@ void Game::Update(float deltaTime)
 
 void Game::Render()
 {
-	_gameWindow.clear();
+	gameWindow.clear();
 
 	for (TileObject* tile : activeTiles)
 	{
-		tile->Draw(_gameWindow);
+		tile->Draw(gameWindow);
 	}
 
 	for (auto pair : objectsList)
 	{
-		pair.second->Draw(_gameWindow);
+		pair.second->Draw(gameWindow);
 	}
 
-	_gameWindow.display();
+	gameWindow.display();
 }
 
 Game::~Game()

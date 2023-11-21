@@ -1,7 +1,8 @@
 #include "PlayerObject.h"
 #include "Game.h"
 
-PlayerObject::PlayerObject():
+PlayerObject::PlayerObject(Game* game):
+	GameObject(game),
 	_idleTexture(),
 	_runTexture(),
 	_jumpTexture(),
@@ -45,7 +46,7 @@ void PlayerObject::Update(float deltaTime)
 	SetVelocityX(moveX * _playerSpeed * deltaTime);
 
 	//jumping
-	if (Input::GetInput(sf::Keyboard::Space))
+	if (Input::GetInput(sf::Keyboard::Space) && !_jumped)
 	{
 		float jumpVelocity = -sqrt(2 * GRAVITY * _jumpHeight);
 
@@ -53,7 +54,10 @@ void PlayerObject::Update(float deltaTime)
 		force.y = objectMass * jumpVelocity / _jumpTime;
 
 		ApplyForce(force, deltaTime, true);
+		_jumped = true;
 	}
+
+	_jumped = !_grounded; //reset jump
 
 	//handle animation & texture swapping
 	if(!_grounded)
@@ -75,5 +79,5 @@ void PlayerObject::Update(float deltaTime)
 	//handle flipping of sprite based on movement speed
 	FlipSprite(2.f);
 
-	GameObject::Update(deltaTime); //rest of the game object update function
+	GameObject::Update(deltaTime); //rest of the _game object update function
 }
