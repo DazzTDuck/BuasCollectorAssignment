@@ -41,8 +41,6 @@ void GameObject::Update(float deltaTime)
 		SetVelocityY(0.f);
 	}
 
-	objectPosition += _velocity; //update position with velocity
-
 	//collision check
 	_grounded = false;
 
@@ -79,6 +77,13 @@ void GameObject::Update(float deltaTime)
 	//set ground collision points
 	_pointL = (objectPosition + sf::Vector2f(5.f, _collider.getGlobalBounds().height + 1));
 	_pointR = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width - 5.f, _collider.getGlobalBounds().height + 1));
+
+
+	//apply drag to the velocity
+	if (_grounded)
+		_velocity *= _objectDrag;
+
+	objectPosition += _velocity; //update position with velocity
 }
 
 void GameObject::Draw(sf::RenderWindow& window)
@@ -100,6 +105,11 @@ void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, bool onlyCollid
 	_acceleration = force / objectMass * deltaTime * speedPercent;
 
 	_velocity += _acceleration;
+}
+
+void GameObject::ApplyImpulse(sf::Vector2f impulse, float deltaTime)
+{
+	_velocity += (impulse / objectMass) * deltaTime;
 }
 
 
@@ -149,6 +159,11 @@ void GameObject::FlipSprite(float originalScaleX)
 		spriteOrigin = { widthOrigin, 0.f };
 		objectScale = { newScaleX, objectScale.y };
 	}
+}
+
+sf::FloatRect GameObject::GetBounds() const
+{
+	return _sprite.getGlobalBounds();
 }
 
 void GameObject::CheckOutOfBounds(sf::RenderWindow& window)

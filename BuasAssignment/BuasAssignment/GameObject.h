@@ -25,7 +25,9 @@ public:
 	void SetVelocityY(float y);
 	void AddVelocity(sf::Vector2f velocity);
 	void ApplyForce(sf::Vector2f force, float deltaTime, bool onlyColliding = false);
+	void ApplyImpulse(sf::Vector2f impulse, float deltaTime);
 	void FlipSprite(float originalScaleX);
+	sf::FloatRect GetBounds() const;
 	sf::Vector2f GetVelocity() const;
 
 	virtual void Update(float deltaTime);
@@ -42,6 +44,7 @@ protected:
 	sf::Vector2f _velocity = sf::Vector2f(0.f, 0.f);
 	sf::Vector2f _acceleration = sf::Vector2f(0.f, 0.f);
 	sf::Vector2f _overlapCollision;
+	float _objectDrag = 0.95f;
 
 	bool _grounded = false;
 	const float _minSqrCollisionOverlap = 4.f * 4.f; //4 pixels

@@ -1,6 +1,7 @@
 #include "PlayerObject.h"
 #include <iostream>
 #include "Game.h"
+#include "MathFunctions.h"
 
 PlayerObject::PlayerObject(Game* game):
 	GameObject(game),
@@ -29,6 +30,7 @@ PlayerObject::PlayerObject(Game* game):
 
 	objectPosition = { 300.f, 100.f }; //set start position
 	respawnLocation = objectPosition;
+	_objectDrag = 0.9f;
 }
 
 void PlayerObject::Start()
@@ -81,6 +83,28 @@ void PlayerObject::Update(float deltaTime)
 
 	//handle flipping of sprite based on movement speed
 	FlipSprite(2.f);
+
+	//player colliding with other game objects
+	for (auto object : _game->objectsList)
+	{
+		if(object.second == this)
+			continue;
+
+		if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
+		{
+			if (MathFunctions::SqrMagnitude(_overlapCollision) > _minSqrCollisionOverlap)
+			{
+				// Calculate the force based on player's velocity and mass
+				sf::Vector2f force = {_velocity.x * objectMass, 0.f};
+
+				object.second->objectPosition += _overlapCollision;
+
+				// Apply the force to the game object
+				object.second->ApplyImpulse(force, deltaTime);
+			}
+		}
+	}
+
 
 	GameObject::Update(deltaTime); //rest of the GameObject update function
 
