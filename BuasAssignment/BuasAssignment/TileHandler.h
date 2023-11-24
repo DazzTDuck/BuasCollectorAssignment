@@ -4,11 +4,13 @@
 
 enum TileTypes
 {
+	Empty,
 	Grass_Begin,
 	Grass_MiddleA,
 	Grass_MiddleB,
 	Grass_MiddleC,
-	Grass_End
+	Grass_End,
+	Invis_Collider
 };
 
 class TileHandler

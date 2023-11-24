@@ -13,6 +13,8 @@ TileObject::TileObject(sf::Sprite* sprite):
 	_collider.setOutlineColor(sf::Color::White);
 	_collider.setOutlineThickness(colliderDrawThickness);
 	_collider.setFillColor(sf::Color::Transparent);
+
+	startPosition = _sprite->getPosition();
 }
 
 void TileObject::Start()

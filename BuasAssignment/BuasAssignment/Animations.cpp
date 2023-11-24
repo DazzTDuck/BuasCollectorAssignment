@@ -42,7 +42,7 @@ const std::map<std::string, sf::IntRect> Animations::animations =
 	{"PlayerRun_5", {348, 16, 35, 52}},
 	{"PlayerRun_6", {428, 16, 35, 52}},
 	{"PlayerRun_7", {512, 16, 35, 52}},
-	{"PlayerRun_8", {593, 16, 35, 52}},
+	{"PlayerRun_8", {591, 16, 35, 52}},
 
 	//jump in air animation frames
 	{"PlayerJumpAir_1", {261, 3, 33, 61}},

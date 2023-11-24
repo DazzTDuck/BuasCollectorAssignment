@@ -1,4 +1,5 @@
 #include "PlayerObject.h"
+#include <iostream>
 #include "Game.h"
 
 PlayerObject::PlayerObject(Game* game):
@@ -26,7 +27,8 @@ PlayerObject::PlayerObject(Game* game):
 	_collider.setOutlineThickness(colliderDrawThickness);
 	_collider.setFillColor(sf::Color::Transparent);
 
-	objectPosition = { 150.f, 100.f }; //set start position
+	objectPosition = { 300.f, 100.f }; //set start position
+	respawnLocation = objectPosition;
 }
 
 void PlayerObject::Start()
@@ -36,6 +38,7 @@ void PlayerObject::Start()
 
 void PlayerObject::Update(float deltaTime)
 {
+	//player movement
 	float moveX = 0.f;
 
 	if (Input::GetInput(sf::Keyboard::A))
@@ -54,10 +57,10 @@ void PlayerObject::Update(float deltaTime)
 		force.y = objectMass * jumpVelocity / _jumpTime;
 
 		ApplyForce(force, deltaTime, true);
-		_jumped = true;
-	}
 
-	_jumped = !_grounded; //reset jump
+		_jumped = true;
+		_jumpDelay = 0.f;
+	}
 
 	//handle animation & texture swapping
 	if(!_grounded)
@@ -79,5 +82,58 @@ void PlayerObject::Update(float deltaTime)
 	//handle flipping of sprite based on movement speed
 	FlipSprite(2.f);
 
-	GameObject::Update(deltaTime); //rest of the _game object update function
+	GameObject::Update(deltaTime); //rest of the GameObject update function
+
+	//timed delay value
+	if (_jumped)
+		_jumpDelay += deltaTime;
+
+	//reset jump trigger
+	if(_jumpDelay >= _jumpReactivateDelay && _jumped)
+	{
+		_jumpDelay = 0.f;
+		_jumped = false;
+	}
+
+	CheckOutOfBounds(_game->gameWindow);
+}
+
+void PlayerObject::CheckOutOfBounds(sf::RenderWindow& window)
+{
+	sf::FloatRect bounds = _sprite.getGlobalBounds();
+
+	//move world based if you walk on the edges of the window
+
+	if (objectPosition.x + bounds.width > window.getSize().x * 0.8 || objectPosition.x < 256)
+	{
+		float value = objectPosition.x > 256 ? -5.16f : 5.16f;
+
+		//move all tiles & objects
+		for (auto tile : _game->activeTiles)
+		{
+			tile->GetSprite()->move({ value, 0.f });
+		}
+
+		for (auto gameObject : _game->objectsList)
+		{
+			gameObject.second->objectPosition += {value, 0.f};
+		}
+	}
+
+	//if player falling down, reset game
+	if (objectPosition.y + bounds.height > window.getSize().y)
+	{
+		//respawn and reset all objects
+		for (auto gameObject : _game->objectsList)
+		{
+			gameObject.second->objectPosition = gameObject.second->respawnLocation;
+			gameObject.second->SetVelocity({ 0.f, 0.f }); //reset velocity
+		}
+
+		//reset all tile position
+		for (auto tile : _game->activeTiles)
+		{
+			tile->GetSprite()->setPosition(tile->startPosition);
+		}
+	}
 }

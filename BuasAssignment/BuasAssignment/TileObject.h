@@ -8,6 +8,7 @@ public:
 
 	bool drawCollider = false;
 	float colliderDrawThickness = 1.f;
+	sf::Vector2f startPosition;
 
 	sf::Sprite* GetSprite() const;
 

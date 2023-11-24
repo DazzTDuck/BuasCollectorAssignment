@@ -19,10 +19,12 @@ TileObject* TileHandler::CreateNewTile(sf::Vector2f position, TileTypes tileType
 
 const std::map<TileTypes, sf::IntRect> TileHandler::tileDefinitions = 
 {
+	{Empty, { 0, 0 ,0 ,0 }},
 	{Grass_Begin, { 0, 9 ,16 ,23 }},
 	{Grass_MiddleA, { 16, 9 ,16 ,23 }},
 	{Grass_MiddleB, { 32, 9 ,16 ,23 }},
 	{Grass_MiddleC, { 48, 9 ,16 ,23 }},
-	{Grass_End, { 64, 9 ,16 ,23 }}
+	{Grass_End, { 64, 9 ,16 ,23 }},
+	{Invis_Collider, { 80, 0 ,16 ,16 }}
 };
 

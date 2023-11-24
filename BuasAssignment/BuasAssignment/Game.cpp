@@ -1,5 +1,7 @@
 #include "Game.h"
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <random>
 #include "MathFunctions.h"
 #include "GameInput.h"
@@ -11,8 +13,17 @@ using namespace sf;
 Game::Game() : // constructor
 	gameWindow(VideoMode(1280, 720), "Collector"),
 	_generator(),
-	_tileHandler()
+	_tileHandler(),
+	_backgroundTexture()
 {
+	//make background sprite
+	_backgroundTexture.loadFromFile("Assets/Background/Background.png");
+	_backgroundTexture.setRepeated(true);
+
+	//set texture an rect so texture can scroll
+	_backgroundSprite.setTexture(_backgroundTexture);
+	_backgroundSprite.setTextureRect({0, 0, 1280, 720});
+	_backgroundSprite.setScale(_backgroundScale);
 };
 
 void Game::Start()
@@ -30,24 +41,21 @@ void Game::Start()
 		pair.second->Start();
 	}
 
-	//create temp _game tiles
-	CreateGameTile(Vector2f(80, 400), Grass_Begin);
+	//read world file
+	std::vector<std::vector<int>> testVector;
+	ReadWorldFile(testVector);
 
-	std::vector<TileTypes> tileTypes = { Grass_MiddleA, Grass_MiddleB, Grass_MiddleC };
-	std::shuffle(tileTypes.begin(), tileTypes.end(), _generator);
-
-	for (int i = 1; i < 59; i++)
+	for (size_t i = 0; i < testVector.size(); i++)
 	{
-		TileTypes randomType = tileTypes[i % tileTypes.size()];
+		for(size_t j = 0; j < testVector[i].size(); j++)
+		{
+			int element = testVector[i][j];
 
-		CreateGameTile(Vector2f(80 + 16 * i, 400), randomType);
-	}
+			if(element == 0) //empty value
+				continue;
 
-	CreateGameTile(Vector2f(1024, 400), Grass_End);
-
-	for (int i = 1; i < 10; i++)
-	{
-		CreateGameTile(Vector2f(1024, 400 - 23 * i), Grass_End);
+			CreateGameTile({16.f * j, 16.f * i}, static_cast<TileTypes>(element));
+		}
 	}
 }
 
@@ -94,6 +102,27 @@ void Game::EventHandler()
 	}
 }
 
+void Game::ReadWorldFile(std::vector<std::vector<int>>& output)
+{
+	std::ifstream file("world.txt");
+	std::string line;
+
+	while (std::getline(file, line))
+	{
+		std::vector<int> row;
+		std::istringstream stringStream(line);
+		int num;
+
+		while (stringStream >> num)
+		{
+			row.push_back(num);
+		}
+		output.push_back(row);
+	}
+
+	file.close();
+}
+
 
 GameObject* Game::CreateGameObject(const std::string& objectName)
 {
@@ -110,18 +139,30 @@ void Game::CreateGameTile(Vector2f position, TileTypes type)
 
 void Game::Update(float deltaTime)
 {
-	
+	//reset sprite to 0 to make it a loop, because repeated textures are not infinite
+	if (_backgroundSprite.getPosition().x < -1280)
+	{
+		_backgroundSprite.setPosition({ _backgroundSprite.getPosition().x + 1280, 0.f });
+	}
+
+	//scroll background
+	_backgroundSprite.move({ -_scrollSpeed * deltaTime, 0.f });
 }
 
 void Game::Render()
 {
 	gameWindow.clear();
 
+	//draw backgrounds
+	gameWindow.draw(_backgroundSprite);
+
+	//draw all tiles
 	for (TileObject* tile : activeTiles)
 	{
 		tile->Draw(gameWindow);
 	}
 
+	//draw all objects
 	for (auto pair : objectsList)
 	{
 		pair.second->Draw(gameWindow);

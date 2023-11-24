@@ -28,9 +28,15 @@ private:
 	void Update(float deltaTime);
 	void Render();
 	void EventHandler();
+	void ReadWorldFile(std::vector<std::vector<int>>& output);
 
 	sf::Time _timePerFrame =  sf::seconds(1.f / 60.f);
 
 	std::default_random_engine _generator;
 	TileHandler _tileHandler;
+
+	sf::Texture _backgroundTexture;
+	sf::Sprite _backgroundSprite;
+	sf::Vector2f _backgroundScale = { 2.667f, 2.667f };
+	float _scrollSpeed = 10.f;
 };

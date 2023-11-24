@@ -51,11 +51,16 @@ void GameObject::Update(float deltaTime)
 
 	for (auto tileObject : _game->activeTiles)
 	{
-		if(!_grounded)
-			_grounded = MathFunctions::IsPointInBounds(_pointR, tileObject->GetSprite()->getGlobalBounds()) || 
-				MathFunctions::IsPointInBounds(_pointL, tileObject->GetSprite()->getGlobalBounds());
+		sf::FloatRect tileBounds = tileObject->GetSprite()->getGlobalBounds();
+		//make bounds smaller on the Y axis so objects fall a bit into it, so it looks better visually
+		tileBounds.top -= -4;
+		tileBounds.height -= 4;
 
-		if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), tileObject->GetSprite()->getGlobalBounds(), _overlapCollision))
+		if(!_grounded)
+			_grounded = MathFunctions::IsPointInBounds(_pointR, tileBounds) ||
+				MathFunctions::IsPointInBounds(_pointL, tileBounds);
+
+		if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), tileBounds, _overlapCollision))
 		{
 			if(MathFunctions::SqrMagnitude(_overlapCollision) > _minSqrCollisionOverlap)
 			{
@@ -74,8 +79,6 @@ void GameObject::Update(float deltaTime)
 	//set ground collision points
 	_pointL = (objectPosition + sf::Vector2f(5.f, _collider.getGlobalBounds().height + 1));
 	_pointR = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width - 5.f, _collider.getGlobalBounds().height + 1));
-
-	CheckOutOfBounds(_game->gameWindow);
 }
 
 void GameObject::Draw(sf::RenderWindow& window)
@@ -99,28 +102,6 @@ void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, bool onlyCollid
 	_velocity += _acceleration;
 }
 
-void GameObject::CheckOutOfBounds(sf::RenderWindow& window)
-{
-	//TODO calculate world offset if player goes too far left or right
-
-	sf::FloatRect bounds = _sprite.getGlobalBounds();
-
-	//keep object from moving out of bounds
-	if (objectPosition.x < 0) 
-		objectPosition.x = 0;
-
-	if (objectPosition.x + bounds.width > window.getSize().x) 
-		objectPosition.x = window.getSize().x - bounds.width;
-
-
-	if (objectPosition.y + bounds.height > window.getSize().y)
-	{
-		//respawn object
-		objectPosition = { objectPosition.x , 100.f };
-		SetVelocity({ 0.f, 0.f }); //reset velocity 
-	} 
-		
-}
 
 sf::Vector2f GameObject::GetVelocity() const
 {
@@ -168,6 +149,11 @@ void GameObject::FlipSprite(float originalScaleX)
 		spriteOrigin = { widthOrigin, 0.f };
 		objectScale = { newScaleX, objectScale.y };
 	}
+}
+
+void GameObject::CheckOutOfBounds(sf::RenderWindow& window)
+{
+	
 }
 
 GameObject::~GameObject() = default;
