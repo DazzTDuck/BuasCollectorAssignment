@@ -10,7 +10,8 @@ enum TileTypes
 	Grass_MiddleB,
 	Grass_MiddleC,
 	Grass_End,
-	Invis_Collider
+	Invis_Collider,
+	Coin
 };
 
 class TileHandler

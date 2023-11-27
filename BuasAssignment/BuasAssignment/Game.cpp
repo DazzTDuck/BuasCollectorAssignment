@@ -24,6 +24,8 @@ Game::Game() : // constructor
 	_backgroundSprite.setTexture(_backgroundTexture);
 	_backgroundSprite.setTextureRect({0, 0, 1280, 720});
 	_backgroundSprite.setScale(_backgroundScale);
+
+	soundManager = new SoundManager();
 };
 
 void Game::Start()
@@ -34,16 +36,11 @@ void Game::Start()
 	PlayerObject* player = new PlayerObject(this);
 	objectsList["player"] = player;
 
-	GameObject* stone = CreateGameObject("Stone"); //temp stone
-
-	for (auto pair : objectsList)
-	{
-		pair.second->Start();
-	}
-
 	//read world file
 	std::vector<std::vector<int>> testVector;
 	ReadWorldFile(testVector);
+
+	int coinNumber = 1;
 
 	for (size_t i = 0; i < testVector.size(); i++)
 	{
@@ -51,12 +48,34 @@ void Game::Start()
 		{
 			int element = testVector[i][j];
 
-			if(element == 0) //empty value
+			if (element == Empty) //empty value
 				continue;
+
+			if(element == Coin)
+			{
+				//create coin objects
+				GameObject* coin = CreateGameObject("Coin" + std::to_string(coinNumber++));
+				coin->objectPosition = { 16.f * j, 16.f * i };
+				coin->respawnLocation = coin->objectPosition;
+
+				continue;
+			}
 
 			CreateGameTile({16.f * j, 16.f * i}, static_cast<TileTypes>(element));
 		}
 	}
+
+	for (auto pair : objectsList)
+	{
+		pair.second->Start();
+	}
+
+	SoundManager::LoadSounds();
+
+	_backgroundMusic.openFromFile("Assets/Sounds/music.wav");
+	_backgroundMusic.setVolume(3.f);
+	_backgroundMusic.setLoop(true);
+	_backgroundMusic.play();
 }
 
 void Game::Run()
@@ -182,4 +201,6 @@ Game::~Game()
 	{
 		delete tile;
 	}
+
+	delete soundManager;
 }

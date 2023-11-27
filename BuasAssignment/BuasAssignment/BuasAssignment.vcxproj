@@ -145,6 +145,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathFunctions.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="TileHandler.cpp" />
     <ClCompile Include="TileObject.cpp" />
   </ItemGroup>
@@ -156,6 +157,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="MathFunctions.h" />
     <ClInclude Include="PlayerObject.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="TileHandler.h" />
     <ClInclude Include="TileObject.h" />
   </ItemGroup>

@@ -6,6 +6,8 @@
 #include "GameInput.h"
 #include <random>
 
+#include "SoundManager.h"
+
 #define GRAVITY (9.81f)
 
 class Game
@@ -22,6 +24,8 @@ public:
 
 	sf::RenderWindow gameWindow;
 
+	SoundManager* soundManager;
+
 	~Game();
 
 private:
@@ -34,6 +38,7 @@ private:
 
 	std::default_random_engine _generator;
 	TileHandler _tileHandler;
+	sf::Music _backgroundMusic;
 
 	sf::Texture _backgroundTexture;
 	sf::Sprite _backgroundSprite;

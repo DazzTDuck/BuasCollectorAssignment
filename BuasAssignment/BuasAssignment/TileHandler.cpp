@@ -25,6 +25,7 @@ const std::map<TileTypes, sf::IntRect> TileHandler::tileDefinitions =
 	{Grass_MiddleB, { 32, 9 ,16 ,23 }},
 	{Grass_MiddleC, { 48, 9 ,16 ,23 }},
 	{Grass_End, { 64, 9 ,16 ,23 }},
-	{Invis_Collider, { 80, 0 ,16 ,16 }}
+	{Invis_Collider, { 80, 0 ,16 ,16 }},
+	{Coin, { 0, 0 ,0 ,0 }}
 };
 

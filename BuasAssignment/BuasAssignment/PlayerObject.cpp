@@ -31,6 +31,9 @@ PlayerObject::PlayerObject(Game* game):
 	objectPosition = { 300.f, 100.f }; //set start position
 	respawnLocation = objectPosition;
 	_objectDrag = 0.9f;
+
+	_hasGravity = true;
+	objectName = "Player";
 }
 
 void PlayerObject::Start()
@@ -62,6 +65,8 @@ void PlayerObject::Update(float deltaTime)
 
 		_jumped = true;
 		_jumpDelay = 0.f;
+
+		PlaySound("Jump", 25.f);
 	}
 
 	//handle animation & texture swapping
@@ -84,27 +89,7 @@ void PlayerObject::Update(float deltaTime)
 	//handle flipping of sprite based on movement speed
 	FlipSprite(2.f);
 
-	//player colliding with other game objects
-	for (auto object : _game->objectsList)
-	{
-		if(object.second == this)
-			continue;
-
-		if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
-		{
-			if (MathFunctions::SqrMagnitude(_overlapCollision) > _minSqrCollisionOverlap)
-			{
-				// Calculate the force based on player's velocity and mass
-				sf::Vector2f force = {_velocity.x * objectMass, 0.f};
-
-				object.second->objectPosition += _overlapCollision;
-
-				// Apply the force to the game object
-				object.second->ApplyImpulse(force, deltaTime);
-			}
-		}
-	}
-
+	GameObjectColliding();
 
 	GameObject::Update(deltaTime); //rest of the GameObject update function
 
@@ -120,6 +105,30 @@ void PlayerObject::Update(float deltaTime)
 	}
 
 	CheckOutOfBounds(_game->gameWindow);
+}
+
+void PlayerObject::GameObjectColliding()
+{
+	//player colliding with other game objects
+	for (auto object : _game->objectsList)
+	{
+		if(object.second == this || object.second->isDisabled)
+			continue;
+
+		if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
+		{
+			if (MathFunctions::SqrMagnitude(_overlapCollision) > _minSqrCollisionOverlap)
+			{
+				if (object.second->objectName == "Coin")
+				{
+					_coinsCollected++;
+					object.second->isDisabled = true;
+
+					PlaySound("Collect", 20.f);
+				}
+			}
+		}
+	}
 }
 
 void PlayerObject::CheckOutOfBounds(sf::RenderWindow& window)
@@ -147,9 +156,12 @@ void PlayerObject::CheckOutOfBounds(sf::RenderWindow& window)
 	//if player falling down, reset game
 	if (objectPosition.y + bounds.height > window.getSize().y)
 	{
+		_coinsCollected = 0;
+
 		//respawn and reset all objects
 		for (auto gameObject : _game->objectsList)
 		{
+			gameObject.second->isDisabled = false;
 			gameObject.second->objectPosition = gameObject.second->respawnLocation;
 			gameObject.second->SetVelocity({ 0.f, 0.f }); //reset velocity
 		}

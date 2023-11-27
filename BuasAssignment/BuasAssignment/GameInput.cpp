@@ -5,7 +5,7 @@ using namespace sf;
 
 void Input::InitializeInputs()
 {
-	for (int i = Keyboard::Key::A; i != Keyboard::KeyCount; i++)
+	for (int i = Keyboard::Key::Unknown; i != Keyboard::KeyCount; i++)
 		inputs[static_cast<Keyboard::Key>(i)] = false;
 }
 
@@ -14,10 +14,10 @@ void Input::InputHandler(RenderWindow& window, Event& event)
 	switch (event.type)
 	{
 		case Event::KeyPressed:
-			Input::inputs[event.key.code] = true;
+			inputs[event.key.code] = true;
 			break;
 		case Event::KeyReleased:
-			Input::inputs[event.key.code] = false;
+			inputs[event.key.code] = false;
 			break;
 	}
 }

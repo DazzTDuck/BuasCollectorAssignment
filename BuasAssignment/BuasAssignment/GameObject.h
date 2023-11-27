@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <SFML/System/Vector2.hpp>
 #include "Animations.h"
 
@@ -8,16 +9,18 @@ class Game;
 class GameObject
 {
 public:
-	explicit GameObject(Game* game);
+	GameObject(Game* game);
 
+	std::string objectName = "Coin";
 	sf::Vector2f objectScale = sf::Vector2f(2.f, 2.f);
-	sf::Vector2f objectPosition = sf::Vector2f(500.f, 100.f);
+	sf::Vector2f objectPosition;
 	sf::Vector2f spriteOrigin = sf::Vector2f(0.f, 0.f);
-	sf::Vector2f respawnLocation = sf::Vector2f(500.f, 100.f);
+	sf::Vector2f respawnLocation;
 	float objectMass = 1.f;
 	float maxVelocity = 15.f;
 
 	bool drawCollider = false;
+	bool isDisabled = false;
 	float colliderDrawThickness = 1.f;
 
 	void SetVelocity(sf::Vector2f velocity);
@@ -35,6 +38,9 @@ public:
 	virtual void Draw(sf::RenderWindow& window);
 	virtual void CheckOutOfBounds(sf::RenderWindow& window);
 
+	void PlaySound(const std::string& soundName, float volume);
+	sf::Sound sound;
+
 	virtual ~GameObject();
 
 protected:
@@ -46,6 +52,7 @@ protected:
 	sf::Vector2f _overlapCollision;
 	float _objectDrag = 0.95f;
 
+	bool _hasGravity = true;
 	bool _grounded = false;
 	const float _minSqrCollisionOverlap = 4.f * 4.f; //4 pixels
 

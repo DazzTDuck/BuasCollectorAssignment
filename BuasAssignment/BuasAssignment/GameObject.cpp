@@ -3,6 +3,8 @@
 #include "MathFunctions.h"
 #include <iostream>
 
+#include "SoundManager.h"
+
 GameObject::GameObject(Game* game):
 	_collider(),
 	_sprite(),
@@ -10,19 +12,22 @@ GameObject::GameObject(Game* game):
 	{
 		this->_game = game;
 
-		_defaultTexture.loadFromFile("Assets/Assets/Props-Rocks.png");
+		_defaultTexture.loadFromFile("Assets/Assets/Tiles.png");
 
 		_sprite.setTexture(_defaultTexture);
-		_sprite.setTextureRect({176, 0, 16, 16}); //a rock as the default object
+		_sprite.setTextureRect({240, 336, 16, 16}); //a rock as the default object
 		_sprite.setPosition(objectPosition);
 		_sprite.setScale(objectScale);
 		spriteOrigin = _sprite.getOrigin();
+		respawnLocation = objectPosition;
 		
 		//make collider shape & resize it
 		_collider.setSize(_sprite.getGlobalBounds().getSize());
 		_collider.setOutlineColor(sf::Color::White);
 		_collider.setOutlineThickness(colliderDrawThickness);
 		_collider.setFillColor(sf::Color::Transparent);
+
+		_hasGravity = false;
 	}
 
 
@@ -33,38 +38,46 @@ void GameObject::Start()
 
 void GameObject::Update(float deltaTime)
 {
+	if (isDisabled)
+		return;
+
 	//Add gravity force
-	ApplyForce(sf::Vector2f(0.f, GRAVITY * objectMass * static_cast<float>(!_grounded)), deltaTime);
-
-	if(_grounded && _velocity.y > 0) //stop player if colliding with something
+	if(_hasGravity)
 	{
-		SetVelocityY(0.f);
-	}
+		ApplyForce(sf::Vector2f(0.f, GRAVITY * objectMass * static_cast<float>(!_grounded)), deltaTime);
 
-	//collision check
-	_grounded = false;
+		if (_grounded && _velocity.y > 0) //stop player if colliding with something
+		{
+			SetVelocityY(0.f);
+		}
 
-	//make collider follow sprite
-	_collider.setPosition(objectPosition);
+		//collision check
+		_grounded = false;
 
-	for (auto tileObject : _game->activeTiles)
-	{
-		sf::FloatRect tileBounds = tileObject->GetSprite()->getGlobalBounds();
-		//make bounds smaller on the Y axis so objects fall a bit into it, so it looks better visually
-		tileBounds.top -= -4;
-		tileBounds.height -= 4;
+		//make collider follow sprite
+		_collider.setPosition(objectPosition);
 
-		if(!_grounded)
-			_grounded = MathFunctions::IsPointInBounds(_pointR, tileBounds) ||
+		for (auto tileObject : _game->activeTiles)
+		{
+			sf::FloatRect tileBounds = tileObject->GetSprite()->getGlobalBounds();
+			//make bounds smaller on the Y axis so objects fall a bit into it, so it looks better visually
+			tileBounds.top -= -4;
+			tileBounds.height -= 4;
+
+			//todo create point on head to stop velocity if ceiling is hit
+
+			if (!_grounded)
+				_grounded = MathFunctions::IsPointInBounds(_pointR, tileBounds) ||
 				MathFunctions::IsPointInBounds(_pointL, tileBounds);
 
-		if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), tileBounds, _overlapCollision))
-		{
-			if(MathFunctions::SqrMagnitude(_overlapCollision) > _minSqrCollisionOverlap)
+			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), tileBounds, _overlapCollision))
 			{
-				//add overlap to player to set it to the correct position
-				objectPosition -= _overlapCollision;
-				_collider.setPosition(objectPosition);
+				if (MathFunctions::SqrMagnitude(_overlapCollision) > _minSqrCollisionOverlap)
+				{
+					//add overlap to player to set it to the correct position
+					objectPosition -= _overlapCollision;
+					_collider.setPosition(objectPosition);
+				}
 			}
 		}
 	}
@@ -88,6 +101,9 @@ void GameObject::Update(float deltaTime)
 
 void GameObject::Draw(sf::RenderWindow& window)
 {
+	if (isDisabled)
+		return;
+
 	if(drawCollider)
 		window.draw(_collider);
 
@@ -96,7 +112,7 @@ void GameObject::Draw(sf::RenderWindow& window)
 
 void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, bool onlyColliding)
 {
-	if (onlyColliding && !_grounded)
+	if (onlyColliding && !_grounded || isDisabled)
 		return;
 
 	//value makes sure the speed will never go faster than a certain amount
@@ -164,6 +180,13 @@ void GameObject::FlipSprite(float originalScaleX)
 sf::FloatRect GameObject::GetBounds() const
 {
 	return _sprite.getGlobalBounds();
+}
+
+void GameObject::PlaySound(const std::string& soundName, float volume)
+{
+	sound.setBuffer(*SoundManager::GetSoundFile(soundName));
+	sound.setVolume(volume);
+	sound.play();
 }
 
 void GameObject::CheckOutOfBounds(sf::RenderWindow& window)
