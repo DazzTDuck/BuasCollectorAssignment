@@ -135,7 +135,7 @@ void PlayerObject::CheckOutOfBounds(sf::RenderWindow& window)
 {
 	sf::FloatRect bounds = _sprite.getGlobalBounds();
 
-	//move world based if you walk on the edges of the window
+	//todo use SFML view (https://www.sfml-dev.org/tutorials/2.5/graphics-view.php)
 
 	if (objectPosition.x + bounds.width > window.getSize().x * 0.8 || objectPosition.x < 256)
 	{
