@@ -86,3 +86,8 @@ bool MathFunctions::IsPointInBounds(sf::Vector2f point, sf::FloatRect box)
 	return point.x >= box.left && point.x <= box.left + box.width &&
 		point.y >= box.top && point.y <= box.top + box.height;
 }
+
+float MathFunctions::Lerp(float a, float b, float t)
+{
+	return a + t * (b - a);
+}

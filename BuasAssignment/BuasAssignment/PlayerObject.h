@@ -15,7 +15,7 @@ public:
 private:
 
 	float _playerSpeed = 310.f;
-	float _jumpHeight = 30.f;
+	float _jumpHeight = 35.f;
 	float _jumpTime = 0.05f;
 	float _jumpReactivateDelay = 1.5f;
 	float _jumpDelay = 0.f;

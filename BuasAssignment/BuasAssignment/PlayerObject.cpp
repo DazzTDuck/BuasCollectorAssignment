@@ -28,7 +28,7 @@ PlayerObject::PlayerObject(Game* game):
 	_collider.setOutlineThickness(colliderDrawThickness);
 	_collider.setFillColor(sf::Color::Transparent);
 
-	objectPosition = { 300.f, 100.f }; //set start position
+	objectPosition = { 300.f, 250.f }; //set start position
 	respawnLocation = objectPosition;
 	_objectDrag = 0.9f;
 
@@ -51,7 +51,8 @@ void PlayerObject::Update(float deltaTime)
 	if (Input::GetInput(sf::Keyboard::D))
 		moveX += 1.f; //right
 
-	SetVelocityX(moveX * _playerSpeed * deltaTime);
+	//if not grounded move slower
+	SetVelocityX(moveX * (_grounded ? 1.f : 0.75f) * _playerSpeed * deltaTime);
 
 	//jumping
 	if (Input::GetInput(sf::Keyboard::Space) && !_jumped)
@@ -135,24 +136,6 @@ void PlayerObject::CheckOutOfBounds(sf::RenderWindow& window)
 {
 	sf::FloatRect bounds = _sprite.getGlobalBounds();
 
-	//todo use SFML view (https://www.sfml-dev.org/tutorials/2.5/graphics-view.php)
-
-	if (objectPosition.x + bounds.width > window.getSize().x * 0.8 || objectPosition.x < 256)
-	{
-		float value = objectPosition.x > 256 ? -5.16f : 5.16f;
-
-		//move all tiles & objects
-		for (auto tile : _game->activeTiles)
-		{
-			tile->GetSprite()->move({ value, 0.f });
-		}
-
-		for (auto gameObject : _game->objectsList)
-		{
-			gameObject.second->objectPosition += {value, 0.f};
-		}
-	}
-
 	//if player falling down, reset game
 	if (objectPosition.y + bounds.height > window.getSize().y)
 	{
@@ -167,7 +150,7 @@ void PlayerObject::CheckOutOfBounds(sf::RenderWindow& window)
 		}
 
 		//reset all tile position
-		for (auto tile : _game->activeTiles)
+		for (auto tile : _game->collisionTiles)
 		{
 			tile->GetSprite()->setPosition(tile->startPosition);
 		}

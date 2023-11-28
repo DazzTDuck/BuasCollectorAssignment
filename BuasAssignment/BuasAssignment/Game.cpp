@@ -16,6 +16,10 @@ Game::Game() : // constructor
 	_tileHandler(),
 	_backgroundTexture()
 {
+	gameView.setSize(1280, 720);
+	gameView.setCenter(640, 360); //center view on center of the screen
+	gameWindow.setView(gameView);
+
 	//make background sprite
 	_backgroundTexture.loadFromFile("Assets/Background/Background.png");
 	_backgroundTexture.setRepeated(true);
@@ -64,6 +68,8 @@ void Game::Start()
 			CreateGameTile({16.f * j, 16.f * i}, static_cast<TileTypes>(element));
 		}
 	}
+
+	
 
 	for (auto pair : objectsList)
 	{
@@ -132,6 +138,8 @@ void Game::ReadWorldFile(std::vector<std::vector<int>>& output)
 		std::istringstream stringStream(line);
 		int num;
 
+		
+
 		while (stringStream >> num)
 		{
 			row.push_back(num);
@@ -151,9 +159,18 @@ GameObject* Game::CreateGameObject(const std::string& objectName)
 	return newObject;
 }
 
-void Game::CreateGameTile(Vector2f position, TileTypes type)
+void Game::CreateGameTile(Vector2f position, TileTypes tileType)
 {
-	activeTiles.push_back(_tileHandler.CreateNewTile(position, type));
+	for(auto type : _tilesToCollide)
+	{
+		if(tileType == type)
+		{
+			collisionTiles.push_back(_tileHandler.CreateNewTile(position, tileType));
+			return;
+		}
+	}
+
+	drawTiles.push_back(_tileHandler.CreateNewTile(position, tileType));
 }
 
 void Game::Update(float deltaTime)
@@ -166,17 +183,34 @@ void Game::Update(float deltaTime)
 
 	//scroll background
 	_backgroundSprite.move({ -_scrollSpeed * deltaTime, 0.f });
+
+	//move game view based on player position
+	gameView.setCenter(MathFunctions::Lerp(gameView.getCenter().x, objectsList["player"]->objectPosition.x, _viewScrollSpeed * deltaTime), gameView.getCenter().y);
 }
 
 void Game::Render()
 {
 	gameWindow.clear();
 
+	//limit game view center
+	if (gameView.getCenter().x < minGameViewCenter.x)
+		gameView.setCenter(minGameViewCenter.x, gameView.getCenter().y);
+
+	if (gameView.getCenter().x > maxGameViewCenter.x)
+		gameView.setCenter(maxGameViewCenter.x, gameView.getCenter().y);
+
+	gameWindow.setView(gameView);
+
 	//draw backgrounds
 	gameWindow.draw(_backgroundSprite);
 
 	//draw all tiles
-	for (TileObject* tile : activeTiles)
+	for (TileObject* tile : collisionTiles)
+	{
+		tile->Draw(gameWindow);
+	}
+
+	for (TileObject* tile : drawTiles)
 	{
 		tile->Draw(gameWindow);
 	}
@@ -197,7 +231,12 @@ Game::~Game()
 		delete pair.second;
 	}
 
-	for (auto tile : activeTiles)
+	for (auto tile : collisionTiles)
+	{
+		delete tile;
+	}
+
+	for (auto tile : drawTiles)
 	{
 		delete tile;
 	}

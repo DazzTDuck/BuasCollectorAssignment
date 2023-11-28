@@ -60,6 +60,7 @@ protected:
 	sf::Sprite _sprite;
 	sf::Vector2f _pointL = {0.f, 0.f};
 	sf::Vector2f _pointR = { 0.f, 0.f };
+	sf::Vector2f _pointHead = { 0.f, 0.f };
 
 	sf::Texture _defaultTexture;
 };

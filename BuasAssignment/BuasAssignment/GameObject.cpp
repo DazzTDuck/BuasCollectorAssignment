@@ -57,18 +57,18 @@ void GameObject::Update(float deltaTime)
 		//make collider follow sprite
 		_collider.setPosition(objectPosition);
 
-		for (auto tileObject : _game->activeTiles)
+		for (auto tileObject : _game->collisionTiles)
 		{
 			sf::FloatRect tileBounds = tileObject->GetSprite()->getGlobalBounds();
-			//make bounds smaller on the Y axis so objects fall a bit into it, so it looks better visually
-			tileBounds.top -= -4;
-			tileBounds.height -= 4;
-
-			//todo create point on head to stop velocity if ceiling is hit
 
 			if (!_grounded)
 				_grounded = MathFunctions::IsPointInBounds(_pointR, tileBounds) ||
 				MathFunctions::IsPointInBounds(_pointL, tileBounds);
+
+			if(MathFunctions::IsPointInBounds(_pointHead, tileBounds) && !_grounded)
+			{
+				SetVelocityY(-_velocity.y / 2); // if you hit a ceiling, bounce player back down
+			}
 
 			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), tileBounds, _overlapCollision))
 			{
@@ -91,6 +91,8 @@ void GameObject::Update(float deltaTime)
 	_pointL = (objectPosition + sf::Vector2f(5.f, _collider.getGlobalBounds().height + 1));
 	_pointR = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width - 5.f, _collider.getGlobalBounds().height + 1));
 
+	//set head point
+	_pointHead = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width / 2, 0.f));
 
 	//apply drag to the velocity
 	if (_grounded)
