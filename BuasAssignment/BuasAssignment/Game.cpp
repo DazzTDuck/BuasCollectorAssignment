@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sstream>
 #include <random>
+
+#include "BackgroundSprite.h"
 #include "MathFunctions.h"
 #include "GameInput.h"
 #include "PlayerObject.h"
@@ -22,6 +24,8 @@ Game::Game() : // constructor
 
 	//make background sprite
 	_backgroundTexture.loadFromFile("Assets/Background/Background.png");
+	_backgroundTreeTexture.loadFromFile("Assets/Trees/Background.png");
+	_treesTexture.loadFromFile("Assets/Trees/Yellow-Tree.png");
 	_backgroundTexture.setRepeated(true);
 
 	//set texture an rect so texture can scroll
@@ -46,6 +50,7 @@ void Game::Start()
 
 	int coinNumber = 1;
 
+	//loop over results and create game tiles
 	for (size_t i = 0; i < testVector.size(); i++)
 	{
 		for(size_t j = 0; j < testVector[i].size(); j++)
@@ -69,6 +74,9 @@ void Game::Start()
 		}
 	}
 
+	//create background sprites
+	CreateBackgroundSprite({ 200.f, 50 }, {2.f, 2.f},
+		_treesTexture, { 0,0,107,368 }, 0.7f);
 
 	for (auto pair : objectsList)
 	{
@@ -170,6 +178,12 @@ void Game::CreateGameTile(Vector2f position, TileTypes tileType)
 	drawTiles.push_back(_tileHandler.CreateNewTile(position, tileType));
 }
 
+void Game::CreateBackgroundSprite(sf::Vector2f position, sf::Vector2f scale, sf::Texture& texture, sf::IntRect rect, float newDepth)
+{
+	BackgroundSprite* newSprite = new BackgroundSprite(position, scale, texture, rect, newDepth);
+	backgroundSprites.push_back(newSprite);
+}
+
 void Game::Update(float deltaTime)
 {
 	//reset sprite to 0 to make it a loop, because repeated textures are not infinite
@@ -178,9 +192,15 @@ void Game::Update(float deltaTime)
 		_backgroundScrollOffset += 1280;
 	}
 
-	//scroll background & basic parallax 
+	//scroll background & parallax for all background sprites
 	_backgroundScrollOffset += -_scrollSpeed * deltaTime;
-	_backgroundSprite.setPosition((gameView.getCenter().x - 640.f) * .8f + _backgroundScrollOffset, 0.f);
+	_backgroundSprite.setPosition((gameView.getCenter().x - 640.f) * _backgroundDepth + _backgroundScrollOffset, 0.f);
+
+	//other background layers
+	for (auto sprite : backgroundSprites)
+	{
+		sprite->SetPosition({ sprite->GetStartPosition().x + (gameView.getCenter().x - 640.f) * sprite->depth, sprite->GetStartPosition().y});
+	}
 
 	//move game view based on player position
 	gameView.setCenter(MathFunctions::Lerp(gameView.getCenter().x, objectsList["player"]->objectPosition.x, _viewScrollSpeed * deltaTime), gameView.getCenter().y);
@@ -201,6 +221,12 @@ void Game::Render()
 
 	//draw backgrounds
 	gameWindow.draw(_backgroundSprite);
+
+	//draw background layers
+	for (BackgroundSprite* sprite : backgroundSprites)
+	{
+		gameWindow.draw(*sprite->GetSprite());
+	}
 
 	//draw all tiles
 	for (TileObject* tile : collisionTiles)
@@ -224,6 +250,8 @@ void Game::Render()
 
 Game::~Game()
 {
+	//delete all saved data to avoid leaks
+
 	for (auto pair : objectsList)
 	{
 		delete pair.second;
@@ -238,6 +266,12 @@ Game::~Game()
 	{
 		delete tile;
 	}
+
+	for (auto sprite : backgroundSprites)
+	{
+		delete sprite;
+	}
+
 
 	delete soundManager;
 }

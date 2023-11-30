@@ -6,6 +6,7 @@
 #include "GameInput.h"
 #include <random>
 
+#include "BackgroundSprite.h"
 #include "SoundManager.h"
 
 #define GRAVITY (9.81f)
@@ -18,10 +19,12 @@ public:
 	void Start();
 	GameObject* CreateGameObject(const std::string& objectName);
 	void CreateGameTile(sf::Vector2f position, TileTypes tileType);
+	void CreateBackgroundSprite(sf::Vector2f position, sf::Vector2f scale, sf::Texture& texture, sf::IntRect rect, float newDepth);
 
 	std::map<std::string, GameObject*> objectsList;
 	std::vector<TileObject*> collisionTiles;
 	std::vector<TileObject*> drawTiles;
+	std::vector<BackgroundSprite*> backgroundSprites;
 
 	sf::RenderWindow gameWindow;
 	sf::View gameView;
@@ -53,8 +56,11 @@ private:
 	sf::Music _backgroundMusic;
 
 	sf::Texture _backgroundTexture;
+	sf::Texture _backgroundTreeTexture;
+	sf::Texture _treesTexture;
 	sf::Sprite _backgroundSprite;
 	float _backgroundScrollOffset = 0.f;
+	float _backgroundDepth = 0.9f;
 	sf::Vector2f _backgroundScale = { 2.667f, 2.667f };
 	float _scrollSpeed = 10.f;
 };
