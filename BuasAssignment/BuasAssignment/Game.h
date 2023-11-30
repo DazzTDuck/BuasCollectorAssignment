@@ -54,6 +54,7 @@ private:
 
 	sf::Texture _backgroundTexture;
 	sf::Sprite _backgroundSprite;
+	float _backgroundScrollOffset = 0.f;
 	sf::Vector2f _backgroundScale = { 2.667f, 2.667f };
 	float _scrollSpeed = 10.f;
 };

@@ -69,7 +69,6 @@ void Game::Start()
 		}
 	}
 
-	
 
 	for (auto pair : objectsList)
 	{
@@ -138,8 +137,6 @@ void Game::ReadWorldFile(std::vector<std::vector<int>>& output)
 		std::istringstream stringStream(line);
 		int num;
 
-		
-
 		while (stringStream >> num)
 		{
 			row.push_back(num);
@@ -176,13 +173,14 @@ void Game::CreateGameTile(Vector2f position, TileTypes tileType)
 void Game::Update(float deltaTime)
 {
 	//reset sprite to 0 to make it a loop, because repeated textures are not infinite
-	if (_backgroundSprite.getPosition().x < -1280)
+	if (_backgroundSprite.getPosition().x < -(1280.f - 640.f * floor((gameView.getCenter().x - 640.f) / 640.f)))
 	{
-		_backgroundSprite.setPosition({ _backgroundSprite.getPosition().x + 1280, 0.f });
+		_backgroundScrollOffset += 1280;
 	}
 
-	//scroll background
-	_backgroundSprite.move({ -_scrollSpeed * deltaTime, 0.f });
+	//scroll background & basic parallax 
+	_backgroundScrollOffset += -_scrollSpeed * deltaTime;
+	_backgroundSprite.setPosition((gameView.getCenter().x - 640.f) * .8f + _backgroundScrollOffset, 0.f);
 
 	//move game view based on player position
 	gameView.setCenter(MathFunctions::Lerp(gameView.getCenter().x, objectsList["player"]->objectPosition.x, _viewScrollSpeed * deltaTime), gameView.getCenter().y);
