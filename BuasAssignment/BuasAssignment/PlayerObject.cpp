@@ -34,6 +34,7 @@ PlayerObject::PlayerObject(Game* game):
 
 	_hasGravity = true;
 	objectName = "Player";
+	objectMass = 3.f;
 }
 
 void PlayerObject::Start()
@@ -71,19 +72,19 @@ void PlayerObject::Update(float deltaTime)
 	}
 
 	//handle animation & texture swapping
-	if(!_grounded)
+	if (!_grounded)
 	{
 		if (_jumpAnimation.PlayAnimation("PlayerJumpAir", _sprite, deltaTime))
 			_sprite.setTexture(_jumpTexture);
 	}
 	else if (abs(_velocity.x) > 0.f)
 	{
-		if(_runAnimation.PlayAnimation("PlayerRun", _sprite, deltaTime))
+		if (_runAnimation.PlayAnimation("PlayerRun", _sprite, deltaTime))
 			_sprite.setTexture(_runTexture);
 	}
 	else if (abs(_velocity.x) == 0.f)
 	{
-		if(_idleAnimation.PlayAnimation("PlayerIdle", _sprite, deltaTime))
+		if (_idleAnimation.PlayAnimation("PlayerIdle", _sprite, deltaTime))
 			_sprite.setTexture(_idleTexture);
 	}
 
@@ -99,7 +100,7 @@ void PlayerObject::Update(float deltaTime)
 		_jumpDelay += deltaTime;
 
 	//reset jump trigger
-	if(_jumpDelay >= _jumpReactivateDelay && _jumped)
+	if (_jumpDelay >= _jumpReactivateDelay && _jumped)
 	{
 		_jumpDelay = 0.f;
 		_jumped = false;
@@ -113,22 +114,19 @@ void PlayerObject::GameObjectColliding()
 	//player colliding with other game objects
 	for (auto object : _game->objectsList)
 	{
-		if(object.second == this || object.second->isDisabled)
+		if (object.second == this || object.second->isDisabled)
 			continue;
 
-		if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
+		if (object.second->objectName == "Coin") 
 		{
-			if (MathFunctions::SqrMagnitude(_overlapCollision) > _minSqrCollisionOverlap)
+			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
 			{
-				if (object.second->objectName == "Coin")
-				{
-					_coinsCollected++;
-					object.second->isDisabled = true;
+				_coinsCollected++;
+				object.second->isDisabled = true;
 
-					PlaySound("Collect", 20.f);
-				}
+				PlaySound("Collect", 20.f);
 			}
-		}
+		}	
 	}
 }
 

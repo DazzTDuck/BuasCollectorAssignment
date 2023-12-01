@@ -54,7 +54,7 @@ protected:
 
 	bool _hasGravity = true;
 	bool _grounded = false;
-	const float _minSqrCollisionOverlap = 4.f * 4.f; //4 pixels
+	const float _minSqrCollisionOverlap = 2.f * 2.f; //2 pixels
 
 	sf::RectangleShape _collider;
 	sf::Sprite _sprite;

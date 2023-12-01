@@ -75,8 +75,16 @@ void Game::Start()
 	}
 
 	//create background sprites
-	CreateBackgroundSprite({ 200.f, 50 }, {2.f, 2.f},
-		_treesTexture, { 0,0,107,368 }, 0.7f);
+
+	CreateBackgroundSprite({ -25.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 352, 0, 96, 896 }, 0.9f);
+	CreateBackgroundSprite({ 166.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 464, 0, 96, 896 }, 0.9f);
+	CreateBackgroundSprite({ 357.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 576, 0, 127, 896 }, 0.9f);
+	
+	CreateBackgroundSprite({ 375.f, 260.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 0, 0, 96, 896 }, 0.8f);
+	CreateBackgroundSprite({ 534.f, 260.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 112, 0, 96, 896 }, 0.8f);
+	CreateBackgroundSprite({ 693.0f, 260.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 224, 0, 127, 896 }, 0.8f);
+
+	CreateBackgroundSprite({ 200.f, 50.f }, { 2.f, 2.f }, _treesTexture, { 0,0,107,368 }, 0.7f);
 
 	for (auto pair : objectsList)
 	{
@@ -202,21 +210,21 @@ void Game::Update(float deltaTime)
 		sprite->SetPosition({ sprite->GetStartPosition().x + (gameView.getCenter().x - 640.f) * sprite->depth, sprite->GetStartPosition().y});
 	}
 
-	//move game view based on player position
-	gameView.setCenter(MathFunctions::Lerp(gameView.getCenter().x, objectsList["player"]->objectPosition.x, _viewScrollSpeed * deltaTime), gameView.getCenter().y);
+	float target = objectsList["player"]->objectPosition.x;
+
+	//move game view based on player position and limit to min and max
+	if (objectsList["player"]->objectPosition.x < minGameViewCenter.x)
+		target = minGameViewCenter.x;
+	else if(objectsList["player"]->objectPosition.x > maxGameViewCenter.x)
+		target = maxGameViewCenter.x;
+		
+	gameView.setCenter(MathFunctions::Lerp(gameView.getCenter().x, target, _viewScrollSpeed * deltaTime), gameView.getCenter().y);
 }
+
 
 void Game::Render()
 {
 	gameWindow.clear();
-
-	//limit game view center
-	if (gameView.getCenter().x < minGameViewCenter.x)
-		gameView.setCenter(minGameViewCenter.x, gameView.getCenter().y);
-
-	if (gameView.getCenter().x > maxGameViewCenter.x)
-		gameView.setCenter(maxGameViewCenter.x, gameView.getCenter().y);
-
 	gameWindow.setView(gameView);
 
 	//draw backgrounds

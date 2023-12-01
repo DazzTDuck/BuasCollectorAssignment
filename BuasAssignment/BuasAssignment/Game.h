@@ -60,7 +60,7 @@ private:
 	sf::Texture _treesTexture;
 	sf::Sprite _backgroundSprite;
 	float _backgroundScrollOffset = 0.f;
-	float _backgroundDepth = 0.9f;
+	float _backgroundDepth = 0.95f;
 	sf::Vector2f _backgroundScale = { 2.667f, 2.667f };
 	float _scrollSpeed = 10.f;
 };
