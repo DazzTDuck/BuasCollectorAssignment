@@ -16,7 +16,7 @@ public:
 	sf::Vector2f objectPosition;
 	sf::Vector2f spriteOrigin = sf::Vector2f(0.f, 0.f);
 	sf::Vector2f respawnLocation;
-	float objectMass = 1.f;
+	float objectMass;
 	float maxVelocity = 15.f;
 
 	bool drawCollider = false;
@@ -60,7 +60,6 @@ protected:
 	sf::Sprite _sprite;
 	sf::Vector2f _pointL = {0.f, 0.f};
 	sf::Vector2f _pointR = { 0.f, 0.f };
-	sf::Vector2f _pointHead = { 0.f, 0.f };
 
 	sf::Texture _defaultTexture;
 };

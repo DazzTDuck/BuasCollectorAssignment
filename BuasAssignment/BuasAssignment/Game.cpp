@@ -74,17 +74,7 @@ void Game::Start()
 		}
 	}
 
-	//create background sprites
-
-	CreateBackgroundSprite({ -25.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 352, 0, 96, 896 }, 0.9f);
-	CreateBackgroundSprite({ 166.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 464, 0, 96, 896 }, 0.9f);
-	CreateBackgroundSprite({ 357.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 576, 0, 127, 896 }, 0.9f);
-	
-	CreateBackgroundSprite({ 375.f, 260.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 0, 0, 96, 896 }, 0.8f);
-	CreateBackgroundSprite({ 534.f, 260.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 112, 0, 96, 896 }, 0.8f);
-	CreateBackgroundSprite({ 693.0f, 260.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 224, 0, 127, 896 }, 0.8f);
-
-	CreateBackgroundSprite({ 200.f, 50.f }, { 2.f, 2.f }, _treesTexture, { 0,0,107,368 }, 0.7f);
+	CreateBackgroundLayers();
 
 	for (auto pair : objectsList)
 	{
@@ -161,6 +151,50 @@ void Game::ReadWorldFile(std::vector<std::vector<int>>& output)
 	}
 
 	file.close();
+}
+
+void Game::CreateBackgroundLayers()
+{
+	//--create background sprites--
+
+//Lighter trees layer (+191 & +382)
+	CreateBackgroundSprite({ 0.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 352, 0, 96, 896 }, 0.9f);
+	CreateBackgroundSprite({ 191.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 464, 0, 96, 896 }, 0.9f);
+	CreateBackgroundSprite({ 382.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 576, 0, 127, 896 }, 0.9f);
+
+	CreateBackgroundSprite({ 450.f, 300.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 352, 0, 96, 896 }, 0.9f);
+	CreateBackgroundSprite({ 641.f, 300.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 464, 0, 96, 896 }, 0.9f);
+	CreateBackgroundSprite({ 832.f, 300.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 576, 0, 127, 896 }, 0.9f);
+
+	//Darker trees layer (+159 & +318)
+	CreateBackgroundSprite({ -175.f, 400.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 0, 0, 96, 896 }, 0.85f);
+	CreateBackgroundSprite({ -16.f, 400.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 112, 0, 96, 896 }, 0.85f);
+	CreateBackgroundSprite({ 143.0f, 400.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 224, 0, 127, 896 }, 0.85f);
+
+	CreateBackgroundSprite({ 375.f, 300.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 0, 0, 96, 896 }, 0.85f);
+	CreateBackgroundSprite({ 534.f, 300.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 112, 0, 96, 896 }, 0.85f);
+	CreateBackgroundSprite({ 693.0f, 300.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 224, 0, 127, 896 }, 0.85f);
+
+	CreateBackgroundSprite({ 800.f, 350.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 0, 0, 96, 896 }, 0.85f);
+	CreateBackgroundSprite({ 959.f, 350.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 112, 0, 96, 896 }, 0.85f);
+	CreateBackgroundSprite({ 1118.f, 350.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 224, 0, 127, 896 }, 0.85f);
+
+	//Biggest Yellow Tree
+	CreateBackgroundSprite({ 600.f, 50.f }, { 2.f, 2.f }, _treesTexture, { 0,0,107,368 }, 0.6f);
+
+	//Big Yellow Tree
+	CreateBackgroundSprite({ 50.f, 150.f }, { 2.f, 2.f }, _treesTexture, { 0,391,110,313 }, 0.6f);
+
+	//Medium Yellow Tree
+	//CreateBackgroundSprite({ 400.f, 350.f }, { 2.f, 2.f }, _treesTexture, { 0,720,92,208 }, 0.6f);
+
+	//Small Yellow Tree
+	//CreateBackgroundSprite({ 400.f, 400.f }, { 2.f, 2.f }, _treesTexture, { 0,994,94,144 }, 0.6f);
+
+	//Very Small Yellow Tree
+	CreateBackgroundSprite({ 400.f, 260.f }, { 2.f, 2.f }, _treesTexture, { 0,1092,75,108 }, 0.f);
+
+	//----
 }
 
 

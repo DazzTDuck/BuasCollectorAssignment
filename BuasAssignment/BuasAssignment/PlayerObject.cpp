@@ -34,11 +34,16 @@ PlayerObject::PlayerObject(Game* game):
 
 	_hasGravity = true;
 	objectName = "Player";
-	objectMass = 3.f;
+	objectMass = 5.f;
 }
 
 void PlayerObject::Start()
 {
+}
+
+void PlayerObject::Draw(sf::RenderWindow& window)
+{
+	GameObject::Draw(window);
 }
 
 
@@ -56,7 +61,7 @@ void PlayerObject::Update(float deltaTime)
 	SetVelocityX(moveX * (_grounded ? 1.f : 0.75f) * _playerSpeed * deltaTime);
 
 	//jumping
-	if (Input::GetInput(sf::Keyboard::Space) && !_jumped)
+	if (Input::GetInput(sf::Keyboard::Space) && !_jumped && _grounded)
 	{
 		float jumpVelocity = -sqrt(2 * GRAVITY * _jumpHeight);
 
@@ -111,6 +116,23 @@ void PlayerObject::Update(float deltaTime)
 
 void PlayerObject::GameObjectColliding()
 {
+	//set head point
+	_pointHead = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width / 2, -5.f));
+
+	for (auto tileObject : _game->collisionTiles)
+	{
+		if (_grounded)
+			return;
+
+		sf::FloatRect tileBounds = tileObject->GetSprite()->getGlobalBounds();
+
+		//if colliding with something above, reverse velocity
+		if (MathFunctions::IsPointInBounds(_pointHead, tileBounds))
+		{
+			SetVelocityY(-_velocity.y / 2); // if you hit a ceiling, bounce player back down
+		}
+	}
+
 	//player colliding with other game objects
 	for (auto object : _game->objectsList)
 	{

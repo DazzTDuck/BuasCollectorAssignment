@@ -40,6 +40,7 @@ private:
 	void Render();
 	void EventHandler();
 	void ReadWorldFile(std::vector<std::vector<int>>& output);
+	void CreateBackgroundLayers();
 
 	std::vector<TileTypes> _tilesToCollide = 
 	{
@@ -60,7 +61,7 @@ private:
 	sf::Texture _treesTexture;
 	sf::Sprite _backgroundSprite;
 	float _backgroundScrollOffset = 0.f;
-	float _backgroundDepth = 0.95f;
+	float _backgroundDepth = 0.95;
 	sf::Vector2f _backgroundScale = { 2.667f, 2.667f };
 	float _scrollSpeed = 10.f;
 };

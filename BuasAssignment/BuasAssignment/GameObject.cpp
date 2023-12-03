@@ -28,6 +28,7 @@ GameObject::GameObject(Game* game):
 		_collider.setFillColor(sf::Color::Transparent);
 
 		_hasGravity = false;
+		objectMass = 0.f;
 	}
 
 
@@ -65,11 +66,6 @@ void GameObject::Update(float deltaTime)
 				_grounded = MathFunctions::IsPointInBounds(_pointR, tileBounds) ||
 				MathFunctions::IsPointInBounds(_pointL, tileBounds);
 
-			if(MathFunctions::IsPointInBounds(_pointHead, tileBounds) && !_grounded)
-			{
-				SetVelocityY(-_velocity.y / 2); // if you hit a ceiling, bounce player back down
-			}
-
 			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), tileBounds, _overlapCollision))
 			{
 				if (MathFunctions::SqrMagnitude(_overlapCollision) > _minSqrCollisionOverlap)
@@ -90,9 +86,6 @@ void GameObject::Update(float deltaTime)
 	//set ground collision points
 	_pointL = (objectPosition + sf::Vector2f(5.f, _collider.getGlobalBounds().height + 1));
 	_pointR = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width - 5.f, _collider.getGlobalBounds().height + 1));
-
-	//set head point
-	_pointHead = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width / 2, 0.f));
 
 	//apply drag to the velocity
 	if (_grounded)
