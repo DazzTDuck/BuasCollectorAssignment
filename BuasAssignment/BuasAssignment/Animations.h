@@ -8,9 +8,9 @@ public:
 	Animations(int amountOfFrames);
 
 	bool PlayAnimation(const std::string& animation, sf::Sprite& sprite, float deltaTime);
-	int GetAnimationStep();
+	int GetAnimationStep() const;
 
-	static const std::map<std::string, sf::IntRect> animations;
+	//static const std::map<std::string, sf::IntRect> animations;
 
 private:
 

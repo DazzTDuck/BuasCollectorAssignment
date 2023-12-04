@@ -15,7 +15,7 @@ GameObject::GameObject(Game* game):
 		_defaultTexture.loadFromFile("Assets/Assets/Tiles.png");
 
 		_sprite.setTexture(_defaultTexture);
-		_sprite.setTextureRect({240, 336, 16, 16}); //a rock as the default object
+		_sprite.setTextureRect({240, 336, 16, 16}); //a coin as the default object
 		_sprite.setPosition(objectPosition);
 		_sprite.setScale(objectScale);
 		spriteOrigin = _sprite.getOrigin();
@@ -129,6 +129,11 @@ sf::Vector2f GameObject::GetVelocity() const
 	return _velocity;
 }
 
+sf::Sprite& GameObject::GetSprite()
+{
+	return _sprite;
+}
+
 void GameObject::AddVelocity(sf::Vector2f velocity)
 {
 	_velocity += velocity;
@@ -154,7 +159,7 @@ void GameObject::SetVelocityY(float y)
 void GameObject::FlipSprite(float originalScaleX)
 {
 	float newScaleX = objectScale.x;
-	float widthOrigin = 0;
+	float widthOrigin = _originalOrigin.x;
 
 	if (_velocity.x > 0)
 		newScaleX = originalScaleX;
@@ -162,12 +167,12 @@ void GameObject::FlipSprite(float originalScaleX)
 	if (_velocity.x < 0)
 	{
 		newScaleX = -originalScaleX;
-		widthOrigin = _sprite.getLocalBounds().width / 1.75f; // division to center sprite after flipping
+		widthOrigin = _sprite.getLocalBounds().width * 0.6f; //center sprite after flipping
 	}
 
 	if (objectScale.x != newScaleX)
 	{
-		spriteOrigin = { widthOrigin, 0.f };
+		spriteOrigin.x = widthOrigin;
 		objectScale = { newScaleX, objectScale.y };
 	}
 }

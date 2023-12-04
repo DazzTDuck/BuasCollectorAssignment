@@ -11,7 +11,7 @@ class GameObject
 public:
 	GameObject(Game* game);
 
-	std::string objectName = "Coin";
+	std::string objectName = "Object";
 	sf::Vector2f objectScale = sf::Vector2f(2.f, 2.f);
 	sf::Vector2f objectPosition;
 	sf::Vector2f spriteOrigin = sf::Vector2f(0.f, 0.f);
@@ -32,6 +32,7 @@ public:
 	void FlipSprite(float originalScaleX);
 	sf::FloatRect GetBounds() const;
 	sf::Vector2f GetVelocity() const;
+	sf::Sprite& GetSprite();
 
 	virtual void Update(float deltaTime);
 	virtual void Start();
@@ -50,6 +51,7 @@ protected:
 	sf::Vector2f _velocity = sf::Vector2f(0.f, 0.f);
 	sf::Vector2f _acceleration = sf::Vector2f(0.f, 0.f);
 	sf::Vector2f _overlapCollision;
+	sf::Vector2f _originalOrigin = sf::Vector2f(0.f, 0.f);
 	float _objectDrag = 0.95f;
 
 	bool _hasGravity = true;

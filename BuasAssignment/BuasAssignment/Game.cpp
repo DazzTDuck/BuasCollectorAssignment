@@ -63,6 +63,7 @@ void Game::Start()
 			{
 				//create coin objects
 				GameObject* coin = CreateGameObject("Coin" + std::to_string(coinNumber++));
+				coin->objectName = "Coin";
 				coin->objectPosition = { 16.f * j, 16.f * i };
 				coin->respawnLocation = coin->objectPosition;
 
@@ -73,15 +74,26 @@ void Game::Start()
 		}
 	}
 
+	//test pot
+	CreateGameObject("Pot");
+	objectsList["Pot"]->objectName = "Pot";
+	objectsList["Pot"]->GetSprite().setTextureRect({368, 304, 16, 16});
+	objectsList["Pot"]->objectPosition = {1200.f, 450.f};
+	objectsList["Pot"]->respawnLocation = { 1200.f, 450.f };
+
+	//create all background elements
 	CreateBackgroundLayers();
 
+	//activate start function in all objects
 	for (auto pair : objectsList)
 	{
 		pair.second->Start();
 	}
 
+	//load all sounds
 	SoundManager::LoadSounds();
 
+	//start background music
 	_backgroundMusic.openFromFile("Assets/Sounds/music.wav");
 	_backgroundMusic.setVolume(3.f);
 	_backgroundMusic.setLoop(true);
@@ -156,7 +168,7 @@ void Game::CreateBackgroundLayers()
 {
 	//--create background sprites--
 
-//Lighter trees layer (+191 & +382)
+	//Lighter trees layer (+191 & +382)
 	CreateBackgroundSprite({ 0.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 352, 0, 96, 896 }, 0.9f);
 	CreateBackgroundSprite({ 191.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 464, 0, 96, 896 }, 0.9f);
 	CreateBackgroundSprite({ 382.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 576, 0, 127, 896 }, 0.9f);

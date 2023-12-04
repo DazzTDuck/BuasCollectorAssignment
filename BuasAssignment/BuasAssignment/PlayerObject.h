@@ -40,6 +40,5 @@ private:
 	Animations _runAnimation;
 	Animations _jumpAnimation;
 	Animations _firstAttackAnimation;
-	Animations _SecondAttackAnimation;
 };
 

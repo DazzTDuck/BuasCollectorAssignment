@@ -5,29 +5,28 @@
 
 PlayerObject::PlayerObject(Game* game):
 	GameObject(game),
-	_idleTexture(),
-	_runTexture(),
-	_jumpTexture(),
-	_attackTexture(),
 	_idleAnimation(4),
 	_runAnimation(8),
 	_jumpAnimation(2),
-	_firstAttackAnimation(4),
-	_SecondAttackAnimation(4)
+	_firstAttackAnimation(8)
 {
 	_idleTexture.loadFromFile("Assets/Character/Idle/Idle-Sheet.png");
 	_runTexture.loadFromFile("Assets/Character/Run/Run-Sheet.png");
 	_jumpTexture.loadFromFile("Assets/Character/Jump-All/Jump-All-Sheet.png");
 	_attackTexture.loadFromFile("Assets/Character/Attack-01/Attack-01-Sheet.png");
 
+	spriteOrigin = { _sprite.getGlobalBounds().width * 1.15f, _sprite.getGlobalBounds().height * 0.5f};
+
+	_originalOrigin = spriteOrigin;
+
 	_sprite.setTexture(_idleTexture);
-	_sprite.setTextureRect({ 22, 16, 35, 48 });
+	_sprite.setTextureRect({ 0, 0, 96, 80 });
 	_sprite.setPosition(objectPosition);
 	_sprite.setScale(objectScale);
-	spriteOrigin = _sprite.getOrigin();
+	_sprite.setOrigin(spriteOrigin);
 
-	//make collider shape & resize it
-	_collider.setSize(_sprite.getGlobalBounds().getSize() - sf::Vector2f{ 30.f, 0.f });
+	//make collider shape and size
+	_collider.setSize({ 21 * objectScale.x, 48 * objectScale.y});
 	_collider.setOutlineColor(sf::Color::White);
 	_collider.setOutlineThickness(colliderDrawThickness);
 	_collider.setFillColor(sf::Color::Transparent);
@@ -39,6 +38,8 @@ PlayerObject::PlayerObject(Game* game):
 	_hasGravity = true;
 	objectName = "Player";
 	objectMass = 1.75f;
+
+	//drawCollider = true;
 }
 
 void PlayerObject::Start()
@@ -65,7 +66,7 @@ void PlayerObject::Update(float deltaTime)
 	if(!_attacking)
 		SetVelocityX(moveX * (_grounded ? 1.f : 0.75f) * _playerSpeed * deltaTime);
 
-	//jumping
+	//jumping input
 	if (Input::GetInput(sf::Keyboard::Space) && !_actionActive && _grounded)
 	{
 		float jumpVelocity = -sqrt(2 * GRAVITY * objectMass * _jumpHeight);
@@ -82,10 +83,10 @@ void PlayerObject::Update(float deltaTime)
 		PlaySound("Jump", 25.f);
 	}
 
+	//attack input
 	if (Input::GetInput(sf::Keyboard::E) && !_actionActive)
 	{
 		_attacking = true;
-
 		_actionActive = true;
 		_actionDelay = 0.f;
 		_currentDelay = _attackDelay;
@@ -130,7 +131,7 @@ void PlayerObject::Update(float deltaTime)
 		if (_attacking) 
 		{
 			//reset attacking action
-			if (_currentDelay >= _attackDelay && _firstAttackAnimation.GetAnimationStep() == 4) 
+			if (_currentDelay >= _attackDelay && _firstAttackAnimation.GetAnimationStep() % 4 == 0) 
 			{
 				_attacking = false;
 
@@ -147,8 +148,6 @@ void PlayerObject::Update(float deltaTime)
 		_actionActive = false;
 	}
 
-	
-
 	CheckOutOfBounds(_game->gameWindow);
 }
 
@@ -159,15 +158,15 @@ void PlayerObject::GameObjectColliding()
 
 	for (auto tileObject : _game->collisionTiles)
 	{
-		if (_grounded)
-			return;
-
-		sf::FloatRect tileBounds = tileObject->GetSprite()->getGlobalBounds();
-
-		//if colliding with something above, reverse velocity
-		if (MathFunctions::IsPointInBounds(_pointHead, tileBounds))
+		if (!_grounded)
 		{
-			SetVelocityY(-_velocity.y / 2); // if you hit a ceiling, bounce player back down
+			sf::FloatRect tileBounds = tileObject->GetSprite()->getGlobalBounds();
+
+			//if colliding with something above, reverse velocity
+			if (MathFunctions::IsPointInBounds(_pointHead, tileBounds))
+			{
+				SetVelocityY(-_velocity.y / 2); // if you hit a ceiling, bounce player back down
+			}
 		}
 	}
 
