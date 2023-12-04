@@ -18,19 +18,28 @@ private:
 	float _playerSpeed = 310.f;
 	float _jumpHeight = 35.f;
 	float _jumpTime = 0.05f;
-	float _jumpReactivateDelay = 1.2f;
-	float _jumpDelay = 0.f;
+	float _jumpReactivateDelay = .5f;
+	float _attackDelay = 0.125f * 4.f; //4 animation frames
+
+	float _currentDelay = 0.f;
+	float _actionDelay = 0.f;
+	bool _actionActive = false;
+
 	int _coinsCollected = 0;
-	bool _jumped = false;
+	bool _attacking = false;
+
 
 	sf::Vector2f _pointHead = { 0.f, 0.f };
 
 	sf::Texture _idleTexture;
 	sf::Texture _runTexture;
 	sf::Texture _jumpTexture;
+	sf::Texture _attackTexture;
 
 	Animations _idleAnimation;
 	Animations _runAnimation;
 	Animations _jumpAnimation;
+	Animations _firstAttackAnimation;
+	Animations _SecondAttackAnimation;
 };
 

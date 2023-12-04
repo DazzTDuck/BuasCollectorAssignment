@@ -45,7 +45,7 @@ void GameObject::Update(float deltaTime)
 	//Add gravity force
 	if(_hasGravity)
 	{
-		ApplyForce(sf::Vector2f(0.f, GRAVITY * objectMass * static_cast<float>(!_grounded)), deltaTime);
+		ApplyForce(sf::Vector2f(0.f, (GRAVITY * objectMass) * static_cast<float>(!_grounded)), deltaTime);
 
 		if (_grounded && _velocity.y > 0) //stop player if colliding with something
 		{
@@ -113,7 +113,7 @@ void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, bool onlyCollid
 	//value makes sure the speed will never go faster than a certain amount
 	float speedPercent = 1 - MathFunctions::Clamp01(_velocity.y / maxVelocity);
 
-	_acceleration = force / objectMass * deltaTime * speedPercent;
+	_acceleration = force * deltaTime * speedPercent;
 
 	_velocity += _acceleration;
 }

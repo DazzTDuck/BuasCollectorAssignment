@@ -27,5 +27,6 @@ bool Input::GetInput(Keyboard::Key key)
 	return inputs.at(key); 
 }
 
+
 std::map<Keyboard::Key, bool> Input::inputs; //define map
 

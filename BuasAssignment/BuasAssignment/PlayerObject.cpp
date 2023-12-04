@@ -8,13 +8,17 @@ PlayerObject::PlayerObject(Game* game):
 	_idleTexture(),
 	_runTexture(),
 	_jumpTexture(),
+	_attackTexture(),
 	_idleAnimation(4),
 	_runAnimation(8),
-	_jumpAnimation(2)
+	_jumpAnimation(2),
+	_firstAttackAnimation(4),
+	_SecondAttackAnimation(4)
 {
 	_idleTexture.loadFromFile("Assets/Character/Idle/Idle-Sheet.png");
 	_runTexture.loadFromFile("Assets/Character/Run/Run-Sheet.png");
 	_jumpTexture.loadFromFile("Assets/Character/Jump-All/Jump-All-Sheet.png");
+	_attackTexture.loadFromFile("Assets/Character/Attack-01/Attack-01-Sheet.png");
 
 	_sprite.setTexture(_idleTexture);
 	_sprite.setTextureRect({ 22, 16, 35, 48 });
@@ -34,7 +38,7 @@ PlayerObject::PlayerObject(Game* game):
 
 	_hasGravity = true;
 	objectName = "Player";
-	objectMass = 5.f;
+	objectMass = 1.75f;
 }
 
 void PlayerObject::Start()
@@ -58,26 +62,42 @@ void PlayerObject::Update(float deltaTime)
 		moveX += 1.f; //right
 
 	//if not grounded move slower
-	SetVelocityX(moveX * (_grounded ? 1.f : 0.75f) * _playerSpeed * deltaTime);
+	if(!_attacking)
+		SetVelocityX(moveX * (_grounded ? 1.f : 0.75f) * _playerSpeed * deltaTime);
 
 	//jumping
-	if (Input::GetInput(sf::Keyboard::Space) && !_jumped && _grounded)
+	if (Input::GetInput(sf::Keyboard::Space) && !_actionActive && _grounded)
 	{
-		float jumpVelocity = -sqrt(2 * GRAVITY * _jumpHeight);
+		float jumpVelocity = -sqrt(2 * GRAVITY * objectMass * _jumpHeight);
 
 		sf::Vector2f force(0.f, 0.f);
-		force.y = objectMass * jumpVelocity / _jumpTime;
+		force.y = jumpVelocity / _jumpTime;
 
 		ApplyForce(force, deltaTime, true);
 
-		_jumped = true;
-		_jumpDelay = 0.f;
+		_actionActive = true;
+		_actionDelay = 0.f;
+		_currentDelay = _jumpReactivateDelay;
 
 		PlaySound("Jump", 25.f);
 	}
 
+	if (Input::GetInput(sf::Keyboard::E) && !_actionActive)
+	{
+		_attacking = true;
+
+		_actionActive = true;
+		_actionDelay = 0.f;
+		_currentDelay = _attackDelay;
+	}
+
 	//handle animation & texture swapping
-	if (!_grounded)
+	if (_attacking) 
+	{
+		if (_firstAttackAnimation.PlayAnimation("PlayerFirstAttack", _sprite, deltaTime))
+			_sprite.setTexture(_attackTexture);
+	}
+	else if (!_grounded)
 	{
 		if (_jumpAnimation.PlayAnimation("PlayerJumpAir", _sprite, deltaTime))
 			_sprite.setTexture(_jumpTexture);
@@ -101,15 +121,33 @@ void PlayerObject::Update(float deltaTime)
 	GameObject::Update(deltaTime); //rest of the GameObject update function
 
 	//timed delay value
-	if (_jumped)
-		_jumpDelay += deltaTime;
+	if (_actionActive)
+		_actionDelay += deltaTime;
 
-	//reset jump trigger
-	if (_jumpDelay >= _jumpReactivateDelay && _jumped)
+	//reset action trigger
+	if (_actionDelay >= _currentDelay && _actionActive)
 	{
-		_jumpDelay = 0.f;
-		_jumped = false;
+		if (_attacking) 
+		{
+			//reset attacking action
+			if (_currentDelay >= _attackDelay && _firstAttackAnimation.GetAnimationStep() == 4) 
+			{
+				_attacking = false;
+
+				_actionDelay = 0.f;
+				_currentDelay = 0.f;
+				_actionActive = false;
+			}
+			return;
+		}
+
+		//other actions 
+		_actionDelay = 0.f;
+		_currentDelay = 0.f;
+		_actionActive = false;
 	}
+
+	
 
 	CheckOutOfBounds(_game->gameWindow);
 }
@@ -139,7 +177,7 @@ void PlayerObject::GameObjectColliding()
 		if (object.second == this || object.second->isDisabled)
 			continue;
 
-		if (object.second->objectName == "Coin") 
+		if (object.second->objectName == "Coin")
 		{
 			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
 			{

@@ -26,8 +26,15 @@ bool Animations::PlayAnimation(const std::string& animation, sf::Sprite& sprite,
 	return false;	
 }
 
+int Animations::GetAnimationStep()
+{
+	return _animationStep;
+}
+
 const std::map<std::string, sf::IntRect> Animations::animations =
 {
+	// left pixel, top pixel, pixel width, pixel height
+
 	//idle animation frames
 	{"PlayerIdle_1", {22, 15, 35, 49}},
 	{"PlayerIdle_2", {85, 15, 35, 49}},
@@ -46,5 +53,17 @@ const std::map<std::string, sf::IntRect> Animations::animations =
 
 	//jump in air animation frames
 	{"PlayerJumpAir_1", {261, 3, 33, 61}},
-	{"PlayerJumpAir_2", {327, 3, 33, 61}}
+	{"PlayerJumpAir_2", {327, 3, 33, 61}},
+
+	//frames first attack
+	{"PlayerFirstAttack_1", {33, 20, 35, 44}},
+	{"PlayerFirstAttack_2", {129, 0, 54, 64}},
+	{"PlayerFirstAttack_3", {223, 4, 35, 60}},
+	{"PlayerFirstAttack_4", {320, 16, 34, 48}},
+
+	//second part of attack
+	{"PlayerSecondAttack_1", {416, 16, 34, 48}},
+	{"PlayerSecondAttack_2", {327, 3, 33, 61}},
+	{"PlayerSecondAttack_3", {327, 3, 33, 61}},
+	{"PlayerSecondAttack_4", {327, 3, 33, 61}}
 };

@@ -3,7 +3,6 @@
 #include <fstream>
 #include <sstream>
 #include <random>
-
 #include "BackgroundSprite.h"
 #include "MathFunctions.h"
 #include "GameInput.h"
@@ -105,7 +104,7 @@ void Game::Run()
 			EventHandler();
 			Update(_timePerFrame.asSeconds());
 
-			for (auto pair : objectsList)
+			for (auto& pair : objectsList)
 			{
 				pair.second->Update(_timePerFrame.asSeconds());
 			}
@@ -282,7 +281,7 @@ void Game::Render()
 	}
 
 	//draw all objects
-	for (auto pair : objectsList)
+	for (auto& pair : objectsList)
 	{
 		pair.second->Draw(gameWindow);
 	}
@@ -294,7 +293,7 @@ Game::~Game()
 {
 	//delete all saved data to avoid leaks
 
-	for (auto pair : objectsList)
+	for (auto& pair : objectsList)
 	{
 		delete pair.second;
 	}
