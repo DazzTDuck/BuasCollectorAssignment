@@ -5,31 +5,33 @@
 
 #include "SoundManager.h"
 
-GameObject::GameObject(Game* game):
-	_collider(),
-	_sprite(),
-	_defaultTexture()
-	{
-		this->_game = game;
+GameObject::GameObject(Game* game)
+{
+	this->_game = game;
 
-		_defaultTexture.loadFromFile("Assets/Assets/Tiles.png");
+	_defaultTexture.loadFromFile("Assets/Assets/Tiles.png");
 
-		_sprite.setTexture(_defaultTexture);
-		_sprite.setTextureRect({240, 336, 16, 16}); //a coin as the default object
-		_sprite.setPosition(objectPosition);
-		_sprite.setScale(objectScale);
-		spriteOrigin = _sprite.getOrigin();
-		respawnLocation = objectPosition;
-		
-		//make collider shape & resize it
-		_collider.setSize(_sprite.getGlobalBounds().getSize());
-		_collider.setOutlineColor(sf::Color::White);
-		_collider.setOutlineThickness(colliderDrawThickness);
-		_collider.setFillColor(sf::Color::Transparent);
+	_sprite.setTexture(_defaultTexture);
+	_sprite.setTextureRect({240, 336, 16, 16}); //a coin as the default object
+	_sprite.setPosition(objectPosition);
+	_sprite.setScale(objectScale);
+	spriteOrigin = _sprite.getOrigin();
+	respawnLocation = objectPosition;
+	
+	//make collider shape & resize it
+	_collider.setSize(_sprite.getGlobalBounds().getSize());
+	_collider.setOutlineColor(sf::Color::White);
+	_collider.setOutlineThickness(colliderDrawThickness);
+	_collider.setFillColor(sf::Color::Transparent);
 
-		_hasGravity = false;
-		objectMass = 0.f;
-	}
+	testL.setRadius(5.f);
+	testL.setFillColor(sf::Color::Red);
+	testR.setRadius(5.f);
+	testR.setFillColor(sf::Color::Red);
+
+	_hasGravity = false;
+	objectMass = 0.f;
+}
 
 
 void GameObject::Start()
@@ -52,8 +54,17 @@ void GameObject::Update(float deltaTime)
 			SetVelocityY(0.f);
 		}
 
+		//set ground collision points
+		_pointL = (objectPosition + sf::Vector2f(5.f, _collider.getGlobalBounds().height + 2.f));
+		_pointR = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width - 14.f, _collider.getGlobalBounds().height + 2.f));
+
+		testL.setPosition(_pointL);
+		testR.setPosition(_pointR);
+
 		//collision check
 		_grounded = false;
+		_rightPointGrounded = false;
+		_leftPointGrounded = false;
 
 		//make collider follow sprite
 		_collider.setPosition(objectPosition);
@@ -62,9 +73,14 @@ void GameObject::Update(float deltaTime)
 		{
 			sf::FloatRect tileBounds = tileObject->GetSprite()->getGlobalBounds();
 
+			if(!_rightPointGrounded)
+				_rightPointGrounded = MathFunctions::IsPointInBounds(_pointR, tileBounds);
+
+			if(!_leftPointGrounded)
+				_leftPointGrounded = MathFunctions::IsPointInBounds(_pointL, tileBounds);
+
 			if (!_grounded)
-				_grounded = MathFunctions::IsPointInBounds(_pointR, tileBounds) ||
-				MathFunctions::IsPointInBounds(_pointL, tileBounds);
+				_grounded = _rightPointGrounded || _leftPointGrounded;
 
 			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), tileBounds, _overlapCollision))
 			{
@@ -83,10 +99,7 @@ void GameObject::Update(float deltaTime)
 	_sprite.setScale(objectScale);
 	_sprite.setOrigin(spriteOrigin);
 
-	//set ground collision points
-	_pointL = (objectPosition + sf::Vector2f(5.f, _collider.getGlobalBounds().height + 1));
-	_pointR = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width - 5.f, _collider.getGlobalBounds().height + 1));
-
+	
 	//apply drag to the velocity
 	if (_grounded)
 		_velocity *= _objectDrag;
@@ -103,6 +116,9 @@ void GameObject::Draw(sf::RenderWindow& window)
 		window.draw(_collider);
 
 	window.draw(_sprite);
+
+	window.draw(testL);
+	window.draw(testR);
 }
 
 void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, bool onlyColliding)
@@ -156,18 +172,22 @@ void GameObject::SetVelocityY(float y)
 }
 
 ///Flips sprite on scale and re-alines origin to match same position, based on the velocity X
-void GameObject::FlipSprite(float originalScaleX)
+void GameObject::FlipSprite(float originalScaleX, float widthMultiplier, bool flipped)
 {
 	float newScaleX = objectScale.x;
 	float widthOrigin = _originalOrigin.x;
 
-	if (_velocity.x > 0)
+	if (flipped ? _velocity.x < 0 : _velocity.x > 0)
+	{
+		_isFlipped = false;
 		newScaleX = originalScaleX;
+	}
 
-	if (_velocity.x < 0)
+	if (flipped ? _velocity.x > 0 : _velocity.x < 0)
 	{
 		newScaleX = -originalScaleX;
-		widthOrigin = _sprite.getLocalBounds().width * 0.6f; //center sprite after flipping
+		widthOrigin = _sprite.getLocalBounds().width * widthMultiplier; //center sprite after flipping
+		_isFlipped = true;
 	}
 
 	if (objectScale.x != newScaleX)

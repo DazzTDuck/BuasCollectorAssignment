@@ -29,7 +29,7 @@ public:
 	void AddVelocity(sf::Vector2f velocity);
 	void ApplyForce(sf::Vector2f force, float deltaTime, bool onlyColliding = false);
 	void ApplyImpulse(sf::Vector2f impulse, float deltaTime);
-	void FlipSprite(float originalScaleX);
+	void FlipSprite(float originalScaleX, float widthMultiplier, bool flipped = false);
 	sf::FloatRect GetBounds() const;
 	sf::Vector2f GetVelocity() const;
 	sf::Sprite& GetSprite();
@@ -55,13 +55,20 @@ protected:
 	float _objectDrag = 0.95f;
 
 	bool _hasGravity = true;
+	bool _isFlipped = false;
 	bool _grounded = false;
-	const float _minSqrCollisionOverlap = 2.f * 2.f; //2 pixels
+	bool _leftPointGrounded = false;
+	bool _rightPointGrounded = false;
+
+	const float _minSqrCollisionOverlap = 1.f * 1.f; //1 pixels
 
 	sf::RectangleShape _collider;
 	sf::Sprite _sprite;
-	sf::Vector2f _pointL = {0.f, 0.f};
-	sf::Vector2f _pointR = { 0.f, 0.f };
+	sf::Vector2f _pointL;
+	sf::Vector2f _pointR;
+
+	sf::CircleShape testL;
+	sf::CircleShape testR;
 
 	sf::Texture _defaultTexture;
 };

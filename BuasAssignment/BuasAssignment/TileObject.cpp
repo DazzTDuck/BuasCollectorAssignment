@@ -3,8 +3,7 @@
 #include <iostream>
 
 TileObject::TileObject(sf::Sprite* sprite):
-	_sprite(),
-	_collider()
+	_sprite()
 {
 	_sprite = sprite;
 

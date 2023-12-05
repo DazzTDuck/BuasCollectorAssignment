@@ -3,12 +3,12 @@
 #include "Game.h"
 #include "MathFunctions.h"
 
-PlayerObject::PlayerObject(Game* game):
+PlayerObject::PlayerObject(Game* game) :
 	GameObject(game),
 	_idleAnimation(4),
 	_runAnimation(8),
 	_jumpAnimation(2),
-	_firstAttackAnimation(8)
+	_attackAnimation(8)
 {
 	_idleTexture.loadFromFile("Assets/Character/Idle/Idle-Sheet.png");
 	_runTexture.loadFromFile("Assets/Character/Run/Run-Sheet.png");
@@ -31,6 +31,13 @@ PlayerObject::PlayerObject(Game* game):
 	_collider.setOutlineThickness(colliderDrawThickness);
 	_collider.setFillColor(sf::Color::Transparent);
 
+	_hitBox.setSize({ 45.f, 75.f });
+	_hitBox.setOutlineColor(sf::Color::White);
+	_hitBox.setOutlineThickness(colliderDrawThickness);
+	_hitBox.setFillColor(sf::Color::Transparent);
+
+	_hitBoxOffset = { 50.f , 10.f};
+
 	objectPosition = { 300.f, 250.f }; //set start position
 	respawnLocation = objectPosition;
 	_objectDrag = 0.9f;
@@ -39,7 +46,8 @@ PlayerObject::PlayerObject(Game* game):
 	objectName = "Player";
 	objectMass = 1.75f;
 
-	//drawCollider = true;
+
+	drawCollider = true;
 }
 
 void PlayerObject::Start()
@@ -48,9 +56,11 @@ void PlayerObject::Start()
 
 void PlayerObject::Draw(sf::RenderWindow& window)
 {
+	if(drawCollider)
+		window.draw(_hitBox);
+
 	GameObject::Draw(window);
 }
-
 
 void PlayerObject::Update(float deltaTime)
 {
@@ -84,9 +94,10 @@ void PlayerObject::Update(float deltaTime)
 	}
 
 	//attack input
-	if (Input::GetInput(sf::Keyboard::E) && !_actionActive)
+	if (Input::GetInput(sf::Keyboard::E) && !_actionActive && !_attacking)
 	{
 		_attacking = true;
+		_hasAttacked = false;
 		_actionActive = true;
 		_actionDelay = 0.f;
 		_currentDelay = _attackDelay;
@@ -95,7 +106,7 @@ void PlayerObject::Update(float deltaTime)
 	//handle animation & texture swapping
 	if (_attacking) 
 	{
-		if (_firstAttackAnimation.PlayAnimation("PlayerFirstAttack", _sprite, deltaTime))
+		if (_attackAnimation.PlayAnimation("PlayerFirstAttack", _sprite, deltaTime))
 			_sprite.setTexture(_attackTexture);
 	}
 	else if (!_grounded)
@@ -115,11 +126,14 @@ void PlayerObject::Update(float deltaTime)
 	}
 
 	//handle flipping of sprite based on movement speed
-	FlipSprite(2.f);
+	FlipSprite(2.f, 0.6f);
 
 	GameObjectColliding();
 
 	GameObject::Update(deltaTime); //rest of the GameObject update function
+
+	//make hitbox follow player, reverse X when flipped
+	_hitBox.setPosition(_collider.getPosition() + sf::Vector2f{(_isFlipped ? -_hitBoxOffset.x : _hitBoxOffset.x), _hitBoxOffset.y});
 
 	//timed delay value
 	if (_actionActive)
@@ -128,10 +142,10 @@ void PlayerObject::Update(float deltaTime)
 	//reset action trigger
 	if (_actionDelay >= _currentDelay && _actionActive)
 	{
-		if (_attacking) 
+		if (_attacking)
 		{
 			//reset attacking action
-			if (_currentDelay >= _attackDelay && _firstAttackAnimation.GetAnimationStep() % 4 == 0) 
+			if (_currentDelay >= _attackDelay && _attackAnimation.GetAnimationStep() % 4 == 0) 
 			{
 				_attacking = false;
 
@@ -149,6 +163,7 @@ void PlayerObject::Update(float deltaTime)
 	}
 
 	CheckOutOfBounds(_game->gameWindow);
+
 }
 
 void PlayerObject::GameObjectColliding()
@@ -176,6 +191,7 @@ void PlayerObject::GameObjectColliding()
 		if (object.second == this || object.second->isDisabled)
 			continue;
 
+		//coin collection
 		if (object.second->objectName == "Coin")
 		{
 			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
@@ -185,7 +201,19 @@ void PlayerObject::GameObjectColliding()
 
 				PlaySound("Collect", 20.f);
 			}
-		}	
+		}
+
+		//player attacking overlap
+		{
+			if (MathFunctions::AreBoundsColliding(_hitBox.getGlobalBounds(), object.second->GetBounds(), _overlapCollision) && _attacking && !_hasAttacked)
+			{
+				//only attack second last frame in swings
+				if(_attackAnimation.GetAnimationStep() == 3 || _attackAnimation.GetAnimationStep() == 7)
+				{
+					_hasAttacked = true;
+				}
+			}
+		}
 	}
 }
 
@@ -198,18 +226,6 @@ void PlayerObject::CheckOutOfBounds(sf::RenderWindow& window)
 	{
 		_coinsCollected = 0;
 
-		//respawn and reset all objects
-		for (auto gameObject : _game->objectsList)
-		{
-			gameObject.second->isDisabled = false;
-			gameObject.second->objectPosition = gameObject.second->respawnLocation;
-			gameObject.second->SetVelocity({ 0.f, 0.f }); //reset velocity
-		}
-
-		//reset all tile position
-		for (auto tile : _game->collisionTiles)
-		{
-			tile->GetSprite()->setPosition(tile->startPosition);
-		}
+		_game->ResetGame();
 	}
 }

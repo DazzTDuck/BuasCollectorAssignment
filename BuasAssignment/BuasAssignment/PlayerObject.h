@@ -14,7 +14,6 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 
 private:
-
 	float _playerSpeed = 310.f;
 	float _jumpHeight = 35.f;
 	float _jumpTime = 0.05f;
@@ -27,9 +26,12 @@ private:
 
 	int _coinsCollected = 0;
 	bool _attacking = false;
-
+	bool _hasAttacked = false;
 
 	sf::Vector2f _pointHead = { 0.f, 0.f };
+
+	sf::RectangleShape _hitBox;
+	sf::Vector2f _hitBoxOffset = { 0.f, 0.f };
 
 	sf::Texture _idleTexture;
 	sf::Texture _runTexture;
@@ -39,6 +41,6 @@ private:
 	Animations _idleAnimation;
 	Animations _runAnimation;
 	Animations _jumpAnimation;
-	Animations _firstAttackAnimation;
+	Animations _attackAnimation;
 };
 

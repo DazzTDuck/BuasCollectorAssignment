@@ -4,6 +4,7 @@
 #include <sstream>
 #include <random>
 #include "BackgroundSprite.h"
+#include "EnemyObject.h"
 #include "MathFunctions.h"
 #include "GameInput.h"
 #include "PlayerObject.h"
@@ -12,10 +13,7 @@ using namespace sf;
 //started 11/2
 
 Game::Game() : // constructor
-	gameWindow(VideoMode(1280, 720), "Collector"),
-	_generator(),
-	_tileHandler(),
-	_backgroundTexture()
+	gameWindow(VideoMode(1280, 720), "Collector")
 {
 	gameView.setSize(1280, 720);
 	gameView.setCenter(640, 360); //center view on center of the screen
@@ -42,6 +40,9 @@ void Game::Start()
 
 	PlayerObject* player = new PlayerObject(this);
 	objectsList["player"] = player;
+
+	EnemyObject* snailEnemy = new EnemyObject(this);
+	objectsList["snail"] = snailEnemy;
 
 	//read world file
 	std::vector<std::vector<int>> testVector;
@@ -235,6 +236,23 @@ void Game::CreateBackgroundSprite(sf::Vector2f position, sf::Vector2f scale, sf:
 {
 	BackgroundSprite* newSprite = new BackgroundSprite(position, scale, texture, rect, newDepth);
 	backgroundSprites.push_back(newSprite);
+}
+
+void Game::ResetGame()
+{
+	//respawn and reset all objects
+	for (auto gameObject : objectsList)
+	{
+		gameObject.second->isDisabled = false;
+		gameObject.second->objectPosition = gameObject.second->respawnLocation;
+		gameObject.second->SetVelocity({ 0.f, 0.f }); //reset velocity
+	}
+
+	//reset all tile position
+	for (auto tile : collisionTiles)
+	{
+		tile->GetSprite()->setPosition(tile->startPosition);
+	}
 }
 
 void Game::Update(float deltaTime)

@@ -20,6 +20,7 @@ public:
 	GameObject* CreateGameObject(const std::string& objectName);
 	void CreateGameTile(sf::Vector2f position, TileTypes tileType);
 	void CreateBackgroundSprite(sf::Vector2f position, sf::Vector2f scale, sf::Texture& texture, sf::IntRect rect, float newDepth);
+	void ResetGame();
 
 	std::map<std::string, GameObject*> objectsList;
 	std::vector<TileObject*> collisionTiles;

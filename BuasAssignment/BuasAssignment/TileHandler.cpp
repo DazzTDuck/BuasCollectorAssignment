@@ -1,7 +1,6 @@
 #include "TileHandler.h"
 
-TileHandler::TileHandler() :
-	_tileTexture()
+TileHandler::TileHandler() 
 {
 	_tileTexture.loadFromFile("Assets/Assets/Tiles.png");
 }
