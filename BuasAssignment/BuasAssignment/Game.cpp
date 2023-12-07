@@ -19,6 +19,9 @@ Game::Game() : // constructor
 	gameView.setCenter(640, 360); //center view on center of the screen
 	gameWindow.setView(gameView);
 
+	uiView.setSize(1280, 720);
+	uiView.setCenter(640, 360);
+
 	//make background sprite
 	_backgroundTexture.loadFromFile("Assets/Background/Background.png");
 	_backgroundTreeTexture.loadFromFile("Assets/Trees/Background.png");
@@ -74,13 +77,6 @@ void Game::Start()
 			CreateGameTile({16.f * j, 16.f * i}, static_cast<TileTypes>(element));
 		}
 	}
-
-	//test pot
-	CreateGameObject("Pot");
-	objectsList["Pot"]->objectName = "Pot";
-	objectsList["Pot"]->GetSprite().setTextureRect({368, 304, 16, 16});
-	objectsList["Pot"]->objectPosition = {1200.f, 450.f};
-	objectsList["Pot"]->respawnLocation = { 1200.f, 450.f };
 
 	//create all background elements
 	CreateBackgroundLayers();
@@ -244,8 +240,7 @@ void Game::ResetGame()
 	for (auto gameObject : objectsList)
 	{
 		gameObject.second->isDisabled = false;
-		gameObject.second->objectPosition = gameObject.second->respawnLocation;
-		gameObject.second->SetVelocity({ 0.f, 0.f }); //reset velocity
+		gameObject.second->OnRespawn();
 	}
 
 	//reset all tile position
@@ -315,6 +310,8 @@ void Game::Render()
 	{
 		pair.second->Draw(gameWindow);
 	}
+
+	//set view to uiView and render any UI elements
 
 	gameWindow.display();
 }

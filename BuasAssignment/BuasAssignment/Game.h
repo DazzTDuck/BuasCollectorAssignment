@@ -29,6 +29,8 @@ public:
 
 	sf::RenderWindow gameWindow;
 	sf::View gameView;
+	sf::View uiView;
+
 	sf::Vector2f minGameViewCenter = { 640.f, 360.f};
 	sf::Vector2f maxGameViewCenter = { 1920.f, 360.f};
 

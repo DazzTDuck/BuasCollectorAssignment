@@ -2,22 +2,28 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/System/Vector2.hpp>
-#include "Animations.h"
+
+enum ObjectType
+{
+	GAMEOBJECT,
+	ENEMY,
+	PLAYER
+};
 
 class Game;
 
 class GameObject
 {
 public:
-	GameObject(Game* game);
+	explicit GameObject(Game* game);
 
 	std::string objectName = "Object";
 	sf::Vector2f objectScale = sf::Vector2f(2.f, 2.f);
 	sf::Vector2f objectPosition;
 	sf::Vector2f spriteOrigin = sf::Vector2f(0.f, 0.f);
 	sf::Vector2f respawnLocation;
+	ObjectType objectType = GAMEOBJECT;
 	float objectMass;
-	float maxVelocity = 15.f;
 
 	bool drawCollider = false;
 	bool isDisabled = false;
@@ -38,6 +44,7 @@ public:
 	virtual void Start();
 	virtual void Draw(sf::RenderWindow& window);
 	virtual void CheckOutOfBounds(sf::RenderWindow& window);
+	virtual void OnRespawn();
 
 	void PlaySound(const std::string& soundName, float volume);
 	sf::Sound sound;
@@ -53,6 +60,7 @@ protected:
 	sf::Vector2f _overlapCollision;
 	sf::Vector2f _originalOrigin = sf::Vector2f(0.f, 0.f);
 	float _objectDrag = 0.95f;
+	float _maxVelocity = 15.f;
 
 	bool _hasGravity = true;
 	bool _isFlipped = false;
@@ -66,9 +74,6 @@ protected:
 	sf::Sprite _sprite;
 	sf::Vector2f _pointL;
 	sf::Vector2f _pointR;
-
-	sf::CircleShape testL;
-	sf::CircleShape testR;
 
 	sf::Texture _defaultTexture;
 };

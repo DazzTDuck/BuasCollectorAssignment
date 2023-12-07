@@ -1,5 +1,7 @@
 #pragma once
+#include "Animations.h"
 #include "GameObject.h";
+#include "Hitpoints.h"
 
 class PlayerObject : public GameObject
 {
@@ -8,10 +10,12 @@ public:
 	explicit PlayerObject(Game* game);
 
 	void CheckOutOfBounds(sf::RenderWindow& window) override;
-	void GameObjectColliding();
+	void GameObjectColliding(float deltaTime);
 	void Update(float deltaTime) override;
 	void Start() override;
 	void Draw(sf::RenderWindow& window) override;
+
+	HitPoints hitPoints;
 
 private:
 	float _playerSpeed = 310.f;

@@ -2,7 +2,6 @@
 #include "Game.h"
 #include "MathFunctions.h"
 #include <iostream>
-
 #include "SoundManager.h"
 
 GameObject::GameObject(Game* game)
@@ -23,11 +22,6 @@ GameObject::GameObject(Game* game)
 	_collider.setOutlineColor(sf::Color::White);
 	_collider.setOutlineThickness(colliderDrawThickness);
 	_collider.setFillColor(sf::Color::Transparent);
-
-	testL.setRadius(5.f);
-	testL.setFillColor(sf::Color::Red);
-	testR.setRadius(5.f);
-	testR.setFillColor(sf::Color::Red);
 
 	_hasGravity = false;
 	objectMass = 0.f;
@@ -57,9 +51,6 @@ void GameObject::Update(float deltaTime)
 		//set ground collision points
 		_pointL = (objectPosition + sf::Vector2f(5.f, _collider.getGlobalBounds().height + 2.f));
 		_pointR = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width - 14.f, _collider.getGlobalBounds().height + 2.f));
-
-		testL.setPosition(_pointL);
-		testR.setPosition(_pointR);
 
 		//collision check
 		_grounded = false;
@@ -116,9 +107,6 @@ void GameObject::Draw(sf::RenderWindow& window)
 		window.draw(_collider);
 
 	window.draw(_sprite);
-
-	window.draw(testL);
-	window.draw(testR);
 }
 
 void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, bool onlyColliding)
@@ -127,7 +115,7 @@ void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, bool onlyCollid
 		return;
 
 	//value makes sure the speed will never go faster than a certain amount
-	float speedPercent = 1 - MathFunctions::Clamp01(_velocity.y / maxVelocity);
+	float speedPercent = 1 - MathFunctions::Clamp01(_velocity.y / _maxVelocity);
 
 	_acceleration = force * deltaTime * speedPercent;
 
@@ -211,7 +199,12 @@ void GameObject::PlaySound(const std::string& soundName, float volume)
 
 void GameObject::CheckOutOfBounds(sf::RenderWindow& window)
 {
-	
+}
+
+void GameObject::OnRespawn()
+{
+	objectPosition = respawnLocation;
+	SetVelocity({ 0.f, 0.f }); //reset velocity
 }
 
 GameObject::~GameObject() = default;

@@ -1,14 +1,17 @@
 #include "PlayerObject.h"
 #include <iostream>
+
+#include "EnemyObject.h"
 #include "Game.h"
 #include "MathFunctions.h"
 
 PlayerObject::PlayerObject(Game* game) :
 	GameObject(game),
-	_idleAnimation(4),
-	_runAnimation(8),
-	_jumpAnimation(2),
-	_attackAnimation(8)
+	hitPoints(3),
+	_idleAnimation(4, 96, 80, 0),
+	_runAnimation(8, 96, 80, 0),
+	_jumpAnimation(2, 96, 80, 0),
+	_attackAnimation(8, 96, 80, 0)
 {
 	_idleTexture.loadFromFile("Assets/Character/Idle/Idle-Sheet.png");
 	_runTexture.loadFromFile("Assets/Character/Run/Run-Sheet.png");
@@ -31,7 +34,7 @@ PlayerObject::PlayerObject(Game* game) :
 	_collider.setOutlineThickness(colliderDrawThickness);
 	_collider.setFillColor(sf::Color::Transparent);
 
-	_hitBox.setSize({ 45.f, 75.f });
+	_hitBox.setSize({ 30.f, 75.f });
 	_hitBox.setOutlineColor(sf::Color::White);
 	_hitBox.setOutlineThickness(colliderDrawThickness);
 	_hitBox.setFillColor(sf::Color::Transparent);
@@ -45,9 +48,9 @@ PlayerObject::PlayerObject(Game* game) :
 	_hasGravity = true;
 	objectName = "Player";
 	objectMass = 1.75f;
+	objectType = PLAYER;
 
-
-	drawCollider = true;
+	//drawCollider = true;
 }
 
 void PlayerObject::Start()
@@ -106,34 +109,34 @@ void PlayerObject::Update(float deltaTime)
 	//handle animation & texture swapping
 	if (_attacking) 
 	{
-		if (_attackAnimation.PlayAnimation("PlayerFirstAttack", _sprite, deltaTime))
+		if (_attackAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_attackTexture);
 	}
 	else if (!_grounded)
 	{
-		if (_jumpAnimation.PlayAnimation("PlayerJumpAir", _sprite, deltaTime))
+		if (_jumpAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_jumpTexture);
 	}
 	else if (abs(_velocity.x) > 0.f)
 	{
-		if (_runAnimation.PlayAnimation("PlayerRun", _sprite, deltaTime))
+		if (_runAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_runTexture);
 	}
 	else if (abs(_velocity.x) == 0.f)
 	{
-		if (_idleAnimation.PlayAnimation("PlayerIdle", _sprite, deltaTime))
+		if (_idleAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_idleTexture);
 	}
 
 	//handle flipping of sprite based on movement speed
 	FlipSprite(2.f, 0.6f);
 
-	GameObjectColliding();
+	GameObjectColliding(deltaTime);
 
 	GameObject::Update(deltaTime); //rest of the GameObject update function
 
 	//make hitbox follow player, reverse X when flipped
-	_hitBox.setPosition(_collider.getPosition() + sf::Vector2f{(_isFlipped ? -_hitBoxOffset.x : _hitBoxOffset.x), _hitBoxOffset.y});
+	_hitBox.setPosition(_collider.getPosition() + sf::Vector2f{(_isFlipped ? -_hitBoxOffset.x * 0.75f : _hitBoxOffset.x), _hitBoxOffset.y});
 
 	//timed delay value
 	if (_actionActive)
@@ -166,7 +169,7 @@ void PlayerObject::Update(float deltaTime)
 
 }
 
-void PlayerObject::GameObjectColliding()
+void PlayerObject::GameObjectColliding(float deltaTime)
 {
 	//set head point
 	_pointHead = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width / 2, -5.f));
@@ -204,12 +207,18 @@ void PlayerObject::GameObjectColliding()
 		}
 
 		//player attacking overlap
+		if (_attacking && !_hasAttacked && object.second->objectType == ENEMY)
 		{
-			if (MathFunctions::AreBoundsColliding(_hitBox.getGlobalBounds(), object.second->GetBounds(), _overlapCollision) && _attacking && !_hasAttacked)
+			//only attack second last frame in swings
+			if (_attackAnimation.GetAnimationStep() == 3 || _attackAnimation.GetAnimationStep() == 7)
 			{
-				//only attack second last frame in swings
-				if(_attackAnimation.GetAnimationStep() == 3 || _attackAnimation.GetAnimationStep() == 7)
+				if(MathFunctions::AreBoundsColliding(_hitBox.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
 				{
+					EnemyObject* enemy = dynamic_cast<EnemyObject*>(object.second);
+					enemy->hitPoints.RemoveHitPoint();
+
+					//push enemy back a bit
+					enemy->ApplyImpulse({ -enemy->GetCurrentMoveDirection() * 350.f, 0.f}, deltaTime);
 					_hasAttacked = true;
 				}
 			}

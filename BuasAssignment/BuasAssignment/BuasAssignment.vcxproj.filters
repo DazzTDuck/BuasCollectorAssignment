@@ -25,11 +25,11 @@
     <Filter Include="Source Files\Classes\World">
       <UniqueIdentifier>{19e1836e-ab98-4715-8054-83ca1c49029b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Classes\Animations">
-      <UniqueIdentifier>{e4f527b6-ad67-42fb-a912-a5efebbb4244}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Classes\Objects">
       <UniqueIdentifier>{888a42f1-f655-44b0-b999-353f6317ebf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Components">
+      <UniqueIdentifier>{e4f527b6-ad67-42fb-a912-a5efebbb4244}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -52,7 +52,7 @@
       <Filter>Source Files\Classes\World</Filter>
     </ClCompile>
     <ClCompile Include="Animations.cpp">
-      <Filter>Source Files\Classes\Animations</Filter>
+      <Filter>Source Files\Classes\Components</Filter>
     </ClCompile>
     <ClCompile Include="GameInput.cpp">
       <Filter>Source Files\Classes\Game</Filter>
@@ -68,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="EnemyObject.cpp">
       <Filter>Source Files\Classes\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="HitPoints.cpp">
+      <Filter>Source Files\Classes\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -105,6 +108,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EnemyObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HitPoints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

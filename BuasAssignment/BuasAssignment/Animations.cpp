@@ -1,23 +1,32 @@
 #include "Animations.h"
 
-Animations::Animations(int amountOfFrames) :
+Animations::Animations(int amountOfFrames, int widthStep, int height, int top) :
 	_maxAnimationStep()
 {
 	_maxAnimationStep = amountOfFrames;
+	_widthStep = widthStep;
+	_height = height;
+	_top = top;
 }
 
-bool Animations::PlayAnimation(const std::string& animation, sf::Sprite& sprite, float deltaTime)
+bool Animations::PlayAnimation(sf::Sprite& sprite, float deltaTime)
 {
 	_frames += deltaTime;
 
 	if (_frames > _frameTime)
 	{
+		_lastFramePlayed = false;
 		//sprite.setTextureRect(animations.at(animation + "_" + std::to_string(_animationStep)));
-		sprite.setTextureRect({ 96 * (_animationStep - 1), 0, 96, 80});
+		//sprite.setTextureRect({ 96 * (_animationStep - 1), 0, 96, 80});
+		sprite.setTextureRect({ _widthStep * (_animationStep - 1), _top, _widthStep, _height });
+
 		_animationStep++;
 
 		if (_animationStep > _maxAnimationStep)
+		{
+			_lastFramePlayed = true;
 			_animationStep = 1;
+		}
 
 		_frames = 0;
 
@@ -30,6 +39,17 @@ bool Animations::PlayAnimation(const std::string& animation, sf::Sprite& sprite,
 int Animations::GetAnimationStep() const
 {
 	return _animationStep;
+}
+
+void Animations::ResetAnimation()
+{
+	_animationStep = 1;
+	_lastFramePlayed = false;
+}
+
+bool Animations::HasLastFramePlayed() const
+{
+	return _lastFramePlayed;
 }
 
 //const std::map<std::string, sf::IntRect> Animations::animations =
