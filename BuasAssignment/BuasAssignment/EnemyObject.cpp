@@ -103,7 +103,7 @@ void EnemyObject::Update(float deltaTime)
 	}
 
 	//flip sprite functionality
-	if(hitPoints.GetCurrentHitPoints() == 0)
+	if(hitPoints.GetCurrentHitPoints() != 0)
 		FlipSprite(2.f, 1.f, true);
 }
 
