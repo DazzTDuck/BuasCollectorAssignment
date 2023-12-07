@@ -50,7 +50,7 @@ PlayerObject::PlayerObject(Game* game) :
 	objectMass = 1.75f;
 	objectType = PLAYER;
 
-	//drawCollider = true;
+	drawCollider = true;
 }
 
 void PlayerObject::Start()

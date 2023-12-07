@@ -19,17 +19,18 @@ EnemyObject::EnemyObject(Game* game):
 	_collider.setSize({45.f, 45.f});
 	spriteOrigin = { _sprite.getGlobalBounds().width * 0.15f, _sprite.getGlobalBounds().width * 0.1f };
 
+	_originalOrigin = spriteOrigin;
 	objectPosition = {1400.f, 300.f};
 	respawnLocation = objectPosition;
 
 	objectName = "Snail";
 	objectType = ENEMY;
-	_enemySpeed = 50.f;
+	_enemySpeed = 100.f;
 	objectMass = 1.2f;
 	_objectDrag = 0.91f;
 	_hasGravity = true;
 
-	//drawCollider = true;
+	drawCollider = true;
 }
 
 void EnemyObject::Start()
@@ -104,7 +105,7 @@ void EnemyObject::Update(float deltaTime)
 
 	//flip sprite functionality
 	if(hitPoints.GetCurrentHitPoints() != 0)
-		FlipSprite(2.f, 1.f, true);
+		FlipSprite(2.f, 0.8f, true);
 }
 
 void EnemyObject::OnRespawn()
