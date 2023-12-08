@@ -19,12 +19,13 @@ public:
 	HitPoints hitPoints;
 
 private:
-	float _playerSpeed = 9.f;
-	float _maxMoveVelocity = 7.f;
-	float _jumpHeight = 35.f;
+	float _playerSpeed = 300.f;
+	float _maxMoveVelocity = 10.f;
+	float _jumpHeight = 25.f;
 	float _jumpTime = 0.05f;
-	float _jumpReactivateDelay = .25f;
+	float _jumpReactivateDelay = .5f;
 	float _attackDelay = 0.125f * 4.f; //4 animation frames
+	float _playerGetDamageKnockBack = 3500.f;
 
 	float _currentDelay = 0.f;
 	float _actionDelay = 0.f;
@@ -34,7 +35,7 @@ private:
 	bool _attacking = false;
 	bool _hasAttacked = false;
 	bool _isDead = false;
-	float _deathDelay = 1.5f;
+	float _deathDelay = 0.125f * 8.f; //8 animation frames
 	float _hitDelay = 1.0f;
 
 	sf::Vector2f _pointHead = { 0.f, 0.f };

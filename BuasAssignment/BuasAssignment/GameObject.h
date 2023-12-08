@@ -33,7 +33,7 @@ public:
 	void SetVelocityX(float x);
 	void SetVelocityY(float y);
 	void AddVelocity(sf::Vector2f velocity);
-	void ApplyForce(sf::Vector2f force, float deltaTime, float maxVelocityX = 0.0f);
+	void ApplyForce(sf::Vector2f force, float deltaTime);
 	void ApplyImpulse(sf::Vector2f impulse, float deltaTime);
 	void FlipSprite(float originalScaleX, float widthMultiplier, bool flipped = false);
 	sf::FloatRect GetBounds() const;
@@ -59,7 +59,7 @@ protected:
 	sf::Vector2f _acceleration = sf::Vector2f(0.f, 0.f);
 	sf::Vector2f _overlapCollision;
 	sf::Vector2f _originalOrigin = sf::Vector2f(0.f, 0.f);
-	float _objectDrag = 0.95f;
+	float _objectDrag = 0.9f;
 	float _maxVelocity = 15.f;
 
 	bool _hasGravity = true;

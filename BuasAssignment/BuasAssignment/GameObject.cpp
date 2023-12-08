@@ -94,6 +94,9 @@ void GameObject::Update(float deltaTime)
 	//apply drag to the velocity
 	if (_grounded)
 		_velocity *= _objectDrag;
+	else
+		_velocity.x *= _objectDrag;
+
 
 	objectPosition += _velocity; //update position with velocity
 }
@@ -109,20 +112,17 @@ void GameObject::Draw(sf::RenderWindow& window)
 	window.draw(_sprite);
 }
 
-void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, float maxVelocityX)
+void GameObject::ApplyForce(sf::Vector2f force, float deltaTime)
 {
 	if (isDisabled)
 		return;
 
 	//value makes sure the speed will never go faster than a certain amount
-	float speedPercentX = 1 - MathFunctions::Clamp01(_velocity.x / maxVelocityX == 0.0f ? _maxVelocity : maxVelocityX);
-	float speedPercentY = 1 - MathFunctions::Clamp01(_velocity.y / _maxVelocity);
+	float speedPercentX = 1 - MathFunctions::Clamp01( abs(_velocity.x) / _maxVelocity);
+	float speedPercentY = 1 - MathFunctions::Clamp01(abs(_velocity.y) / _maxVelocity);
 
 	_acceleration.x = force.x * deltaTime * speedPercentX;
 	_acceleration.y = force.y * deltaTime * speedPercentY;
-
-	if(objectType == PLAYER)
-		std::cout << std::to_string(force.x) << " - " << std::to_string(force.y) << "\n";
 
 	_velocity += _acceleration;
 }
@@ -169,13 +169,13 @@ void GameObject::FlipSprite(float originalScaleX, float widthMultiplier, bool fl
 	float newScaleX = objectScale.x;
 	float widthOrigin = _originalOrigin.x;
 
-	if (flipped ? _velocity.x < 0 : _velocity.x > 0)
+	if (flipped ? _velocity.x <= 0 : _velocity.x > 0)
 	{
 		_isFlipped = false;
 		newScaleX = originalScaleX;
 	}
 
-	if (flipped ? _velocity.x > 0 : _velocity.x < 0)
+	if (flipped ? _velocity.x > 0 : _velocity.x <= 0)
 	{
 		newScaleX = -originalScaleX;
 		widthOrigin = _sprite.getLocalBounds().width * widthMultiplier; //center sprite after flipping

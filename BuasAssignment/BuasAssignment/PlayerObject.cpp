@@ -57,6 +57,11 @@ PlayerObject::PlayerObject(Game* game) :
 
 void PlayerObject::Start()
 {
+	//1 second delay before player can do anything
+
+	_actionActive = true;
+	_actionDelay = 0.f;
+	_currentDelay = 1.f;
 }
 
 void PlayerObject::Draw(sf::RenderWindow& window)
@@ -77,10 +82,15 @@ void PlayerObject::Update(float deltaTime)
 	if (Input::GetInput(sf::Keyboard::D))
 		moveX += 1.f; //right
 
-	//if not grounded move slower
-	if (!_attacking && !_isDead && abs(moveX) > 0)
-		ApplyForce(sf::Vector2f{ moveX * (_grounded ? 1.f : 0.75f) * _playerSpeed * deltaTime, 0.0f }, _maxMoveVelocity);
-		
+	//apply player movement force
+	if (!_attacking && !_isDead)
+	{
+		float forceX = moveX * (_grounded ? 1.f : 0.5f) * _playerSpeed; //if not grounded move slower
+		float speedPercent = 1 - MathFunctions::Clamp01(abs(_velocity.x) / _maxMoveVelocity);
+
+		ApplyForce({forceX / objectMass * speedPercent, 0.0f }, deltaTime);
+	}
+
 	//jumping input
 	if (Input::GetInput(sf::Keyboard::Space) && !_actionActive && _grounded && !_isDead)
 	{
@@ -89,7 +99,7 @@ void PlayerObject::Update(float deltaTime)
 		sf::Vector2f force(0.f, 0.f);
 		force.y = jumpVelocity / _jumpTime;
 
-		ApplyForce(force, deltaTime, _maxMoveVelocity);
+		ApplyForce(force, deltaTime);
 
 		_actionActive = true;
 		_actionDelay = 0.f;
@@ -109,7 +119,7 @@ void PlayerObject::Update(float deltaTime)
 	}
 
 	//handle animation & texture swapping
-	if (_isDead) 
+	if (_isDead)
 	{
 		if (_deathAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_deathTexture);
@@ -124,12 +134,12 @@ void PlayerObject::Update(float deltaTime)
 		if (_jumpAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_jumpTexture);
 	}
-	else if (abs(_velocity.x) > 0.1f)
+	else if (abs(_velocity.x) > 0.05f)
 	{
 		if (_runAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_runTexture);
 	}
-	else if (abs(_velocity.x) < 0.1f)
+	else if (abs(_velocity.x) < 0.05f)
 	{
 		if (_idleAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_idleTexture);
@@ -180,7 +190,6 @@ void PlayerObject::Update(float deltaTime)
 	}
 
 	CheckOutOfBounds(_game->gameWindow);
-
 }
 
 void PlayerObject::GameObjectColliding(float deltaTime)
@@ -255,7 +264,7 @@ void PlayerObject::GameObjectColliding(float deltaTime)
 				_isDead = hitPoints.GetCurrentHitPoints() == 0;
 				_currentDelay = _isDead ? _deathDelay : _hitDelay;	
 
-				//ApplyImpulse({-MathFunctions::Normalize(enemy->objectPosition - objectPosition).x * 1500.f, 0.f }, deltaTime);
+				ApplyImpulse({-MathFunctions::Normalize(enemy->objectPosition - objectPosition).x * _playerGetDamageKnockBack, 0.f }, deltaTime);
 			}
 		}
 	}
@@ -263,6 +272,8 @@ void PlayerObject::GameObjectColliding(float deltaTime)
 
 void PlayerObject::OnRespawn()
 {
+	GameObject::OnRespawn();
+
 	_coinsCollected = 0;
 
 	hitPoints.ResetHitPoints();
