@@ -109,15 +109,20 @@ void GameObject::Draw(sf::RenderWindow& window)
 	window.draw(_sprite);
 }
 
-void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, bool onlyColliding)
+void GameObject::ApplyForce(sf::Vector2f force, float deltaTime, float maxVelocityX)
 {
-	if (onlyColliding && !_grounded || isDisabled)
+	if (isDisabled)
 		return;
 
 	//value makes sure the speed will never go faster than a certain amount
-	float speedPercent = 1 - MathFunctions::Clamp01(_velocity.y / _maxVelocity);
+	float speedPercentX = 1 - MathFunctions::Clamp01(_velocity.x / maxVelocityX == 0.0f ? _maxVelocity : maxVelocityX);
+	float speedPercentY = 1 - MathFunctions::Clamp01(_velocity.y / _maxVelocity);
 
-	_acceleration = force * deltaTime * speedPercent;
+	_acceleration.x = force.x * deltaTime * speedPercentX;
+	_acceleration.y = force.y * deltaTime * speedPercentY;
+
+	if(objectType == PLAYER)
+		std::cout << std::to_string(force.x) << " - " << std::to_string(force.y) << "\n";
 
 	_velocity += _acceleration;
 }
@@ -142,7 +147,6 @@ void GameObject::AddVelocity(sf::Vector2f velocity)
 {
 	_velocity += velocity;
 }
-
 
 void GameObject::SetVelocity(sf::Vector2f velocity)
 {

@@ -15,7 +15,6 @@ EnemyObject::EnemyObject(Game* game):
 	_sprite.setTextureRect({288, 32, 48, 32});
 
 	//reset collider
-	//_collider.setSize(_sprite.getGlobalBounds().getSize());
 	_collider.setSize({45.f, 45.f});
 	spriteOrigin = { _sprite.getGlobalBounds().width * 0.15f, _sprite.getGlobalBounds().width * 0.1f };
 
@@ -25,12 +24,12 @@ EnemyObject::EnemyObject(Game* game):
 
 	objectName = "Snail";
 	objectType = ENEMY;
-	_enemySpeed = 100.f;
+	_enemySpeed = 55.f;
 	objectMass = 1.2f;
 	_objectDrag = 0.91f;
 	_hasGravity = true;
 
-	drawCollider = true;
+	//drawCollider = true;
 }
 
 void EnemyObject::Start()

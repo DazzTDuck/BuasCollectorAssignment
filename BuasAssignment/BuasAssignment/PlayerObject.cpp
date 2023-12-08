@@ -11,12 +11,14 @@ PlayerObject::PlayerObject(Game* game) :
 	_idleAnimation(4, 96, 80, 0),
 	_runAnimation(8, 96, 80, 0),
 	_jumpAnimation(2, 96, 80, 0),
-	_attackAnimation(8, 96, 80, 0)
+	_attackAnimation(8, 96, 80, 0),
+	_deathAnimation(8, 96, 80, 0)
 {
 	_idleTexture.loadFromFile("Assets/Character/Idle/Idle-Sheet.png");
 	_runTexture.loadFromFile("Assets/Character/Run/Run-Sheet.png");
 	_jumpTexture.loadFromFile("Assets/Character/Jump-All/Jump-All-Sheet.png");
 	_attackTexture.loadFromFile("Assets/Character/Attack-01/Attack-01-Sheet.png");
+	_deathTexture.loadFromFile("Assets/Character/Dead/Dead-Sheet.png");
 
 	spriteOrigin = { _sprite.getGlobalBounds().width * 1.15f, _sprite.getGlobalBounds().height * 0.5f};
 
@@ -43,14 +45,14 @@ PlayerObject::PlayerObject(Game* game) :
 
 	objectPosition = { 300.f, 250.f }; //set start position
 	respawnLocation = objectPosition;
-	_objectDrag = 0.9f;
+	_objectDrag = 0.8f;
 
 	_hasGravity = true;
 	objectName = "Player";
 	objectMass = 1.75f;
 	objectType = PLAYER;
 
-	drawCollider = true;
+	//drawCollider = true;
 }
 
 void PlayerObject::Start()
@@ -76,18 +78,18 @@ void PlayerObject::Update(float deltaTime)
 		moveX += 1.f; //right
 
 	//if not grounded move slower
-	if(!_attacking)
-		SetVelocityX(moveX * (_grounded ? 1.f : 0.75f) * _playerSpeed * deltaTime);
-
+	if (!_attacking && !_isDead && abs(moveX) > 0)
+		ApplyForce(sf::Vector2f{ moveX * (_grounded ? 1.f : 0.75f) * _playerSpeed * deltaTime, 0.0f }, _maxMoveVelocity);
+		
 	//jumping input
-	if (Input::GetInput(sf::Keyboard::Space) && !_actionActive && _grounded)
+	if (Input::GetInput(sf::Keyboard::Space) && !_actionActive && _grounded && !_isDead)
 	{
 		float jumpVelocity = -sqrt(2 * GRAVITY * objectMass * _jumpHeight);
 
 		sf::Vector2f force(0.f, 0.f);
 		force.y = jumpVelocity / _jumpTime;
 
-		ApplyForce(force, deltaTime, true);
+		ApplyForce(force, deltaTime, _maxMoveVelocity);
 
 		_actionActive = true;
 		_actionDelay = 0.f;
@@ -97,7 +99,7 @@ void PlayerObject::Update(float deltaTime)
 	}
 
 	//attack input
-	if (Input::GetInput(sf::Keyboard::E) && !_actionActive && !_attacking)
+	if (Input::GetInput(sf::Keyboard::E) && !_actionActive && !_attacking && !_isDead)
 	{
 		_attacking = true;
 		_hasAttacked = false;
@@ -107,7 +109,12 @@ void PlayerObject::Update(float deltaTime)
 	}
 
 	//handle animation & texture swapping
-	if (_attacking) 
+	if (_isDead) 
+	{
+		if (_deathAnimation.PlayAnimation(_sprite, deltaTime))
+			_sprite.setTexture(_deathTexture);
+	}
+	else if (_attacking) 
 	{
 		if (_attackAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_attackTexture);
@@ -117,12 +124,12 @@ void PlayerObject::Update(float deltaTime)
 		if (_jumpAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_jumpTexture);
 	}
-	else if (abs(_velocity.x) > 0.f)
+	else if (abs(_velocity.x) > 0.1f)
 	{
 		if (_runAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_runTexture);
 	}
-	else if (abs(_velocity.x) == 0.f)
+	else if (abs(_velocity.x) < 0.1f)
 	{
 		if (_idleAnimation.PlayAnimation(_sprite, deltaTime))
 			_sprite.setTexture(_idleTexture);
@@ -159,6 +166,13 @@ void PlayerObject::Update(float deltaTime)
 			return;
 		}
 
+		if(_isDead) 
+		{
+			//player is dead
+			_game->ResetGame();
+			_isDead = false;
+		}
+
 		//other actions 
 		_actionDelay = 0.f;
 		_currentDelay = 0.f;
@@ -189,7 +203,7 @@ void PlayerObject::GameObjectColliding(float deltaTime)
 	}
 
 	//player colliding with other game objects
-	for (auto object : _game->objectsList)
+	for (auto& object : _game->objectsList)
 	{
 		if (object.second == this || object.second->isDisabled)
 			continue;
@@ -207,23 +221,56 @@ void PlayerObject::GameObjectColliding(float deltaTime)
 		}
 
 		//player attacking overlap
-		if (_attacking && !_hasAttacked && object.second->objectType == ENEMY)
+		if (object.second->objectType == ENEMY)
 		{
-			//only attack second last frame in swings
-			if (_attackAnimation.GetAnimationStep() == 3 || _attackAnimation.GetAnimationStep() == 7)
+			if (_attacking && !_hasAttacked)
 			{
-				if(MathFunctions::AreBoundsColliding(_hitBox.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
+				//only attack second last frame in swings
+				if (_attackAnimation.GetAnimationStep() == 3 || _attackAnimation.GetAnimationStep() == 7)
 				{
-					EnemyObject* enemy = dynamic_cast<EnemyObject*>(object.second);
-					enemy->hitPoints.RemoveHitPoint();
+					if (MathFunctions::AreBoundsColliding(_hitBox.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
+					{
+						EnemyObject* enemy = dynamic_cast<EnemyObject*>(object.second);
+						enemy->hitPoints.RemoveHitPoint();
 
-					//push enemy back a bit
-					enemy->ApplyImpulse({ -enemy->GetCurrentMoveDirection() * 350.f, 0.f}, deltaTime);
-					_hasAttacked = true;
+						//push enemy back a bit in the direction you hit it
+						enemy->ApplyImpulse({ MathFunctions::Normalize(enemy->objectPosition - objectPosition).x * 350.f, 0.f }, deltaTime);
+						_hasAttacked = true;
+
+						return; //make sure player does not take damage in same frame as hitting enemy
+					}
 				}
+			}
+			
+			//do damage to player
+			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision) && !_isDead && !_actionActive)
+			{
+				EnemyObject* enemy = dynamic_cast<EnemyObject*>(object.second);
+
+				hitPoints.RemoveHitPoint();
+
+				_actionActive = true;
+				_actionDelay = 0.f;
+				
+				_isDead = hitPoints.GetCurrentHitPoints() == 0;
+				_currentDelay = _isDead ? _deathDelay : _hitDelay;	
+
+				//ApplyImpulse({-MathFunctions::Normalize(enemy->objectPosition - objectPosition).x * 1500.f, 0.f }, deltaTime);
 			}
 		}
 	}
+}
+
+void PlayerObject::OnRespawn()
+{
+	_coinsCollected = 0;
+
+	hitPoints.ResetHitPoints();
+	_idleAnimation.ResetAnimation();
+	_runAnimation.ResetAnimation();
+	_jumpAnimation.ResetAnimation();
+	_attackAnimation.ResetAnimation();
+	_deathAnimation.ResetAnimation();
 }
 
 void PlayerObject::CheckOutOfBounds(sf::RenderWindow& window)
@@ -231,10 +278,8 @@ void PlayerObject::CheckOutOfBounds(sf::RenderWindow& window)
 	sf::FloatRect bounds = _sprite.getGlobalBounds();
 
 	//if player falling down, reset game
-	if (objectPosition.y + bounds.height > window.getSize().y)
-	{
-		_coinsCollected = 0;
-
+	if (objectPosition.y + bounds.height > window.getSize().y && !_isDead)
+	{		
 		_game->ResetGame();
 	}
 }

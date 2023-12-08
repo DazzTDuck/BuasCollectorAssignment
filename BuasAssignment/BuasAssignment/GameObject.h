@@ -33,7 +33,7 @@ public:
 	void SetVelocityX(float x);
 	void SetVelocityY(float y);
 	void AddVelocity(sf::Vector2f velocity);
-	void ApplyForce(sf::Vector2f force, float deltaTime, bool onlyColliding = false);
+	void ApplyForce(sf::Vector2f force, float deltaTime, float maxVelocityX = 0.0f);
 	void ApplyImpulse(sf::Vector2f impulse, float deltaTime);
 	void FlipSprite(float originalScaleX, float widthMultiplier, bool flipped = false);
 	sf::FloatRect GetBounds() const;

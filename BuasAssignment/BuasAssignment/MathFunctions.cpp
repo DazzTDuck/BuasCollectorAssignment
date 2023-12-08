@@ -8,7 +8,7 @@ sf::Vector2f MathFunctions::Normalize(sf::Vector2f vector2)
 	float const mag = Magnitude(vector2);
 
 	if (mag == 0.0f)
-		return { 0.0f, 0.0f};
+		return {0.0f, 0.0f};
 
 	return vector2 / mag;
 }
