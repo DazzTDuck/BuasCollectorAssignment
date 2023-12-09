@@ -8,6 +8,7 @@
 
 #include "BackgroundSprite.h"
 #include "SoundManager.h"
+#include "UserInterface.h"
 
 #define GRAVITY (9.81f)
 
@@ -35,6 +36,7 @@ public:
 	sf::Vector2f maxGameViewCenter = { 1920.f, 360.f};
 
 	SoundManager* soundManager;
+	UserInterface* userInterface;
 
 	~Game();
 

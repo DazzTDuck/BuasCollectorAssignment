@@ -34,6 +34,7 @@ Game::Game() : // constructor
 	_backgroundSprite.setScale(_backgroundScale);
 
 	soundManager = new SoundManager();
+	userInterface = new UserInterface();
 };
 
 void Game::Start()
@@ -112,6 +113,9 @@ void Game::Run()
 			timeSinceLastUpdate -= _timePerFrame;
 			EventHandler();
 			Update(_timePerFrame.asSeconds());
+
+			//update user interface
+			userInterface->Update(_timePerFrame.asSeconds());
 
 			for (auto& pair : objectsList)
 			{
@@ -248,6 +252,9 @@ void Game::ResetGame()
 	{
 		tile->GetSprite()->setPosition(tile->startPosition);
 	}
+
+	//reset UI
+	userInterface->ResetUI();
 }
 
 void Game::Update(float deltaTime)
@@ -312,6 +319,8 @@ void Game::Render()
 	}
 
 	//set view to uiView and render any UI elements
+	gameWindow.setView(uiView);
+	userInterface->Draw(gameWindow);
 
 	gameWindow.display();
 }
@@ -341,5 +350,6 @@ Game::~Game()
 	}
 
 
+	delete userInterface;
 	delete soundManager;
 }

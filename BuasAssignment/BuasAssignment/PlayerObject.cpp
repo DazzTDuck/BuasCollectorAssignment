@@ -67,7 +67,6 @@ PlayerObject::PlayerObject(Game* game) :
 void PlayerObject::Start()
 {
 	//1 second delay before player can do anything
-
 	_actionActive = true;
 	_actionDelay = 0.f;
 	_currentDelay = 1.f;
@@ -236,6 +235,7 @@ void PlayerObject::GameObjectColliding(float deltaTime)
 				_coinsCollected++;
 				object.second->isDisabled = true;
 
+				_game->userInterface->UpdateCoinsText(_coinsCollected, _maxCoins);
 				PlaySound("Collect", 20.f);
 			}
 		}
@@ -264,11 +264,14 @@ void PlayerObject::GameObjectColliding(float deltaTime)
 			}
 			
 			//do damage to player
-			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision) && !_isDead && !_actionActive)
+			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision) && !_isDead && !_actionActive && object.second->hitPoints.GetCurrentHitPoints() != 0)
 			{
 				EnemyObject* enemy = dynamic_cast<EnemyObject*>(object.second);
 
 				hitPoints.RemoveHitPoint();
+
+				//update UI
+				_game->userInterface->UpdateHearts(hitPoints.GetCurrentHitPoints());
 
 				_actionActive = true;
 				_actionDelay = 0.f;
@@ -290,6 +293,10 @@ void PlayerObject::OnRespawn()
 
 	_coinsCollected = 0;
 
+	//reset text UI
+	_game->userInterface->UpdateCoinsText(_coinsCollected, _maxCoins);
+
+	//reset animations
 	hitPoints.ResetHitPoints();
 	_idleAnimation.ResetAnimation();
 	_runAnimation.ResetAnimation();

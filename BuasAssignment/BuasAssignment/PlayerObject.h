@@ -29,6 +29,8 @@ private:
 	bool _actionActive = false;
 
 	int _coinsCollected = 0;
+	int _maxCoins = 10;
+
 	bool _attacking = false;
 	bool _hasAttacked = false;
 	bool _isDead = false;

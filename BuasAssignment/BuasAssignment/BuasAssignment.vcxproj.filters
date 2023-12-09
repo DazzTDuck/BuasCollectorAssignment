@@ -72,6 +72,9 @@
     <ClCompile Include="HitPoints.cpp">
       <Filter>Source Files\Classes\Components</Filter>
     </ClCompile>
+    <ClCompile Include="UserInterface.cpp">
+      <Filter>Source Files\Classes\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -113,5 +116,16 @@
     <ClInclude Include="HitPoints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BuasAssignment.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

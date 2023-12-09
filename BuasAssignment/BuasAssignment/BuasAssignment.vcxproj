@@ -151,6 +151,7 @@
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="TileHandler.cpp" />
     <ClCompile Include="TileObject.cpp" />
+    <ClCompile Include="UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h" />
@@ -163,9 +164,14 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="MathFunctions.h" />
     <ClInclude Include="PlayerObject.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="TileHandler.h" />
     <ClInclude Include="TileObject.h" />
+    <ClInclude Include="UserInterface.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BuasAssignment.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
