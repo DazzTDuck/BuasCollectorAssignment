@@ -1,10 +1,6 @@
 #include "Hitpoints.h"
 
-HitPoints::HitPoints(int hitPointsAmount)
-{
-	_hitPoints = hitPointsAmount;
-	_maxHitPoints = hitPointsAmount;
-}
+HitPoints::HitPoints() = default;
 
 void HitPoints::RemoveHitPoint()
 {
@@ -15,6 +11,12 @@ void HitPoints::RemoveHitPoint()
 void HitPoints::ResetHitPoints()
 {
 	_hitPoints = _maxHitPoints;
+}
+
+void HitPoints::SetHitPoints(int newHitPoints)
+{
+	_hitPoints = newHitPoints;
+	_maxHitPoints = newHitPoints;
 }
 
 int HitPoints::GetCurrentHitPoints() const

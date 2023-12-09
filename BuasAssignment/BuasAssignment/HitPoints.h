@@ -2,15 +2,16 @@
 class HitPoints
 {
 public:
-	explicit HitPoints(int hitPointsAmount);
+	explicit HitPoints();
 
 	void RemoveHitPoint();
 	void ResetHitPoints();
+	void SetHitPoints(int newHitPoints);
 	int GetCurrentHitPoints() const;
 
 private:
 
-	int _hitPoints;
-	int _maxHitPoints;
+	int _hitPoints = 0;
+	int _maxHitPoints = 0;
 };
 

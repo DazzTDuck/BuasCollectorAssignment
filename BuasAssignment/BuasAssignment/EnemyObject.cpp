@@ -4,31 +4,38 @@
 
 EnemyObject::EnemyObject(Game* game):
 	GameObject(game),
-	hitPoints(1),
 	_moveAnimation(8, 48, 32, 0),
 	_deathAnimation(8, 48, 32, 96),
 	_hideAnimation(8, 48, 32, 32),
 	_unhideAnimation(8, 48, 32, 64)
 {
+	//set texture
 	_defaultTexture.loadFromFile("Assets/Mob/Snail/all.png");
-
 	_sprite.setTextureRect({288, 32, 48, 32});
 
-	//reset collider
+	//set collider size
 	_collider.setSize({45.f, 45.f});
-	spriteOrigin = { _sprite.getGlobalBounds().width * 0.15f, _sprite.getGlobalBounds().width * 0.1f };
 
+	//set origin
+	spriteOrigin = { _sprite.getGlobalBounds().width * 0.15f, _sprite.getGlobalBounds().width * 0.1f };
 	_originalOrigin = spriteOrigin;
+
+	//set starting position
 	objectPosition = {1400.f, 300.f};
 	respawnLocation = objectPosition;
 
+	//object properties
 	objectName = "Snail";
 	objectType = ENEMY;
 	_enemySpeed = 55.f;
 	objectMass = 1.2f;
+	hitPoints.SetHitPoints(1);
+
+	//physics properties
 	_objectDrag = 0.91f;
 	_hasGravity = true;
 
+	//debug bounding box
 	//drawCollider = true;
 }
 

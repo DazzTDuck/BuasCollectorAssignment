@@ -18,6 +18,9 @@ void SoundManager::LoadSounds()
 {
 	_instance->_soundDefinitions["Collect"] = _instance->BufferLoadFile("Assets/Sounds/collect.wav");
 	_instance->_soundDefinitions["Jump"] = _instance->BufferLoadFile("Assets/Sounds/jump.wav");
+	_instance->_soundDefinitions["PlayerHit"] = _instance->BufferLoadFile("Assets/Sounds/PlayerHit.wav");
+	_instance->_soundDefinitions["Swing"] = _instance->BufferLoadFile("Assets/Sounds/Swing.wav");
+	_instance->_soundDefinitions["EnemyHit"] = _instance->BufferLoadFile("Assets/Sounds/EnemyHit.wav");
 }
 
 sf::SoundBuffer* SoundManager::BufferLoadFile(const std::string& path)

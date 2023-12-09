@@ -3,6 +3,8 @@
 #include <SFML/Audio.hpp>
 #include <SFML/System/Vector2.hpp>
 
+#include "Hitpoints.h"
+
 enum ObjectType
 {
 	GAMEOBJECT,
@@ -49,6 +51,8 @@ public:
 	void PlaySound(const std::string& soundName, float volume);
 	sf::Sound sound;
 
+	HitPoints hitPoints;
+
 	virtual ~GameObject();
 
 protected:
@@ -61,6 +65,8 @@ protected:
 	sf::Vector2f _originalOrigin = sf::Vector2f(0.f, 0.f);
 	float _objectDrag = 0.9f;
 	float _maxVelocity = 15.f;
+
+	int _objectHitPoints = 1;
 
 	bool _hasGravity = true;
 	bool _isFlipped = false;

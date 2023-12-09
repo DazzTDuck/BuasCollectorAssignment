@@ -7,23 +7,24 @@
 
 PlayerObject::PlayerObject(Game* game) :
 	GameObject(game),
-	hitPoints(3),
 	_idleAnimation(4, 96, 80, 0),
 	_runAnimation(8, 96, 80, 0),
 	_jumpAnimation(2, 96, 80, 0),
 	_attackAnimation(8, 96, 80, 0),
 	_deathAnimation(8, 96, 80, 0)
 {
+	//load all textures
 	_idleTexture.loadFromFile("Assets/Character/Idle/Idle-Sheet.png");
 	_runTexture.loadFromFile("Assets/Character/Run/Run-Sheet.png");
 	_jumpTexture.loadFromFile("Assets/Character/Jump-All/Jump-All-Sheet.png");
 	_attackTexture.loadFromFile("Assets/Character/Attack-01/Attack-01-Sheet.png");
 	_deathTexture.loadFromFile("Assets/Character/Dead/Dead-Sheet.png");
 
+	//setup origin
 	spriteOrigin = { _sprite.getGlobalBounds().width * 1.15f, _sprite.getGlobalBounds().height * 0.5f};
-
 	_originalOrigin = spriteOrigin;
 
+	//setup sprite
 	_sprite.setTexture(_idleTexture);
 	_sprite.setTextureRect({ 0, 0, 96, 80 });
 	_sprite.setPosition(objectPosition);
@@ -36,22 +37,30 @@ PlayerObject::PlayerObject(Game* game) :
 	_collider.setOutlineThickness(colliderDrawThickness);
 	_collider.setFillColor(sf::Color::Transparent);
 
+	//creating hitbox
 	_hitBox.setSize({ 30.f, 75.f });
 	_hitBox.setOutlineColor(sf::Color::White);
 	_hitBox.setOutlineThickness(colliderDrawThickness);
 	_hitBox.setFillColor(sf::Color::Transparent);
 
+	//offsetting player hitbox
 	_hitBoxOffset = { 50.f , 10.f};
 
+	//set start location
 	objectPosition = { 300.f, 250.f }; //set start position
 	respawnLocation = objectPosition;
-	_objectDrag = 0.8f;
 
+	//physics values
+	_objectDrag = 0.8f;
 	_hasGravity = true;
+
+	//object properties
 	objectName = "Player";
 	objectMass = 1.75f;
 	objectType = PLAYER;
+	hitPoints.SetHitPoints(3);
 
+	//debug bounding box
 	//drawCollider = true;
 }
 
@@ -109,13 +118,15 @@ void PlayerObject::Update(float deltaTime)
 	}
 
 	//attack input
-	if (Input::GetInput(sf::Keyboard::E) && !_actionActive && !_attacking && !_isDead)
+	if (Input::GetInput(sf::Keyboard::E) && !_actionActive && !_attacking && !_isDead && _grounded)
 	{
 		_attacking = true;
 		_hasAttacked = false;
 		_actionActive = true;
 		_actionDelay = 0.f;
 		_currentDelay = _attackDelay;
+
+		PlaySound("Swing", 25.f);
 	}
 
 	//handle animation & texture swapping
@@ -232,19 +243,20 @@ void PlayerObject::GameObjectColliding(float deltaTime)
 		//player attacking overlap
 		if (object.second->objectType == ENEMY)
 		{
-			if (_attacking && !_hasAttacked)
+			if (_attacking && !_hasAttacked && object.second->hitPoints.GetCurrentHitPoints() != 0)
 			{
 				//only attack second last frame in swings
 				if (_attackAnimation.GetAnimationStep() == 3 || _attackAnimation.GetAnimationStep() == 7)
 				{
 					if (MathFunctions::AreBoundsColliding(_hitBox.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
 					{
-						EnemyObject* enemy = dynamic_cast<EnemyObject*>(object.second);
-						enemy->hitPoints.RemoveHitPoint();
+						object.second->hitPoints.RemoveHitPoint();
 
 						//push enemy back a bit in the direction you hit it
-						enemy->ApplyImpulse({ MathFunctions::Normalize(enemy->objectPosition - objectPosition).x * 350.f, 0.f }, deltaTime);
+						object.second->ApplyImpulse({ MathFunctions::Normalize(object.second->objectPosition - objectPosition).x * 350.f, 0.f }, deltaTime);
 						_hasAttacked = true;
+
+						object.second->PlaySound("EnemyHit", 20.f);
 
 						return; //make sure player does not take damage in same frame as hitting enemy
 					}
@@ -265,6 +277,8 @@ void PlayerObject::GameObjectColliding(float deltaTime)
 				_currentDelay = _isDead ? _deathDelay : _hitDelay;	
 
 				ApplyImpulse({-MathFunctions::Normalize(enemy->objectPosition - objectPosition).x * _playerGetDamageKnockBack, 0.f }, deltaTime);
+
+				PlaySound("PlayerHit", 20.f);
 			}
 		}
 	}

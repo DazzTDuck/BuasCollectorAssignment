@@ -1,7 +1,6 @@
 #pragma once
 #include "Animations.h"
 #include "GameObject.h"
-#include "HitPoints.h"
 
 class EnemyObject : public GameObject
 {
@@ -12,8 +11,6 @@ public:
 	void Update(float deltaTime) override;
 	void OnRespawn() override;
 	float GetCurrentMoveDirection() const;
-
-	HitPoints hitPoints;
 
 protected:
 	virtual void MoveSideToSide(float deltaTime);

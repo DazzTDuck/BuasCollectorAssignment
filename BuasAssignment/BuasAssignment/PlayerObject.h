@@ -1,7 +1,6 @@
 #pragma once
 #include "Animations.h"
-#include "GameObject.h";
-#include "Hitpoints.h"
+#include "GameObject.h"
 
 class PlayerObject : public GameObject
 {
@@ -15,8 +14,6 @@ public:
 	void Start() override;
 	void Draw(sf::RenderWindow& window) override;
 	void OnRespawn() override;
-
-	HitPoints hitPoints;
 
 private:
 	float _playerSpeed = 300.f;
@@ -35,7 +32,7 @@ private:
 	bool _attacking = false;
 	bool _hasAttacked = false;
 	bool _isDead = false;
-	float _deathDelay = 0.125f * 8.f; //8 animation frames
+	float _deathDelay = 0.125f * 9.f; //9 animation frames
 	float _hitDelay = 1.0f;
 
 	sf::Vector2f _pointHead = { 0.f, 0.f };

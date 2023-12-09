@@ -10,6 +10,7 @@ GameObject::GameObject(Game* game)
 
 	_defaultTexture.loadFromFile("Assets/Assets/Tiles.png");
 
+	//setup sprite
 	_sprite.setTexture(_defaultTexture);
 	_sprite.setTextureRect({240, 336, 16, 16}); //a coin as the default object
 	_sprite.setPosition(objectPosition);
@@ -23,6 +24,7 @@ GameObject::GameObject(Game* game)
 	_collider.setOutlineThickness(colliderDrawThickness);
 	_collider.setFillColor(sf::Color::Transparent);
 
+	//physic properties
 	_hasGravity = false;
 	objectMass = 0.f;
 }
