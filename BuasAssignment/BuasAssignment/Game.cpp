@@ -206,7 +206,7 @@ void Game::CreateBackgroundLayers()
 	//CreateBackgroundSprite({ 400.f, 400.f }, { 2.f, 2.f }, _treesTexture, { 0,994,94,144 }, 0.6f);
 
 	//Very Small Yellow Tree
-	CreateBackgroundSprite({ 400.f, 260.f }, { 2.f, 2.f }, _treesTexture, { 0,1092,75,108 }, 0.f);
+	CreateBackgroundSprite({ 335.f, 310.f }, { 2.f, 2.f }, _treesTexture, { 0,1092,75,108 }, 0.f);
 
 	//----
 }

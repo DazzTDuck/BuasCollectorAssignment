@@ -4,7 +4,6 @@
 #include "TileHandler.h"
 #include "TileObject.h"
 #include "GameInput.h"
-#include <random>
 
 #include "BackgroundSprite.h"
 #include "SoundManager.h"
@@ -51,13 +50,14 @@ private:
 	{
 		Grass_Begin, Grass_MiddleA, Grass_MiddleB, Grass_MiddleC,
 		Grass_End, Invis_Collider, Coin, Rocks_EdgeR1, Rocks_EdgeR2,
-		Rocks_EdgeL1, Rocks_EdgeL2, Rocks_UnderA, Rocks_UnderB, Rocks_UnderC
+		Rocks_EdgeL1, Rocks_EdgeL2, Rocks_UnderA, Rocks_UnderB, Rocks_UnderC,
+		Bridge_Begin, Bridge_MiddleA, Bridge_MiddleB, Bridge_MiddleC, Bridge_End,
+		RockGrass_Begin, RockGrass_End, Bridge_ExtraA, Bridge_ExtraB, Bridge_ExtraC, Chest
 	};
 
 	float _viewScrollSpeed = 7.f;
 	sf::Time _timePerFrame =  sf::seconds(1.f / 60.f);
 
-	std::default_random_engine _generator;
 	TileHandler _tileHandler;
 	sf::Music _backgroundMusic;
 
@@ -66,7 +66,7 @@ private:
 	sf::Texture _treesTexture;
 	sf::Sprite _backgroundSprite;
 	float _backgroundScrollOffset = 0.f;
-	float _backgroundDepth = 0.95;
+	float _backgroundDepth = 0.95f;
 	sf::Vector2f _backgroundScale = { 2.667f, 2.667f };
 	float _scrollSpeed = 10.f;
 };
