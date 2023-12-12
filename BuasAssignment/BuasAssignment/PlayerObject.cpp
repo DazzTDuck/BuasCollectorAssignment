@@ -305,6 +305,14 @@ void PlayerObject::OnRespawn()
 	_deathAnimation.ResetAnimation();
 }
 
+void PlayerObject::CoinAdded()
+{
+	_maxCoins++;
+
+	//update UI
+	_game->userInterface->UpdateCoinsText(_coinsCollected, _maxCoins);
+}
+
 void PlayerObject::CheckOutOfBounds(sf::RenderWindow& window)
 {
 	sf::FloatRect bounds = _sprite.getGlobalBounds();

@@ -72,6 +72,8 @@ void Game::Start()
 				coin->objectPosition = { 16.f * j, 16.f * i };
 				coin->respawnLocation = coin->objectPosition;
 
+				player->CoinAdded();
+
 				continue;
 			}
 

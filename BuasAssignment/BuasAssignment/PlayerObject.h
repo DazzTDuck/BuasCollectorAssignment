@@ -14,6 +14,7 @@ public:
 	void Start() override;
 	void Draw(sf::RenderWindow& window) override;
 	void OnRespawn() override;
+	void CoinAdded();
 
 private:
 	float _playerSpeed = 300.f;
@@ -29,7 +30,7 @@ private:
 	bool _actionActive = false;
 
 	int _coinsCollected = 0;
-	int _maxCoins = 10;
+	int _maxCoins = 0;
 
 	bool _attacking = false;
 	bool _hasAttacked = false;
