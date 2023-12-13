@@ -45,8 +45,6 @@ void Game::Start()
 	PlayerObject* player = new PlayerObject(this);
 	objectsList["player"] = player;
 
-	EnemyObject* snailEnemy = new EnemyObject(this);
-	objectsList["snail"] = snailEnemy;
 
 	//read world file
 	std::vector<std::vector<int>> testVector;
@@ -74,6 +72,27 @@ void Game::Start()
 
 				player->CoinAdded();
 
+				continue;
+			}
+
+			if(element == Chest)
+			{
+				//create chest for the end state
+				GameObject* chest = CreateGameObject("Chest" + std::to_string(coinNumber++));
+				chest->objectName = "Chest";
+				chest->objectPosition = { 16.f * j, 16.f * i };
+				chest->respawnLocation = chest->objectPosition;
+
+				continue;
+			}
+
+			if(element == SnailEnemy)
+			{
+				EnemyObject* snailEnemy = new EnemyObject(this);
+				snailEnemy->objectName = "Snail";
+				snailEnemy->objectPosition = { 16.f * j, 16.f * i };
+				snailEnemy->respawnLocation = snailEnemy->objectPosition;
+				objectsList["snail"] = snailEnemy;
 				continue;
 			}
 
@@ -231,6 +250,15 @@ void Game::CreateGameTile(Vector2f position, TileTypes tileType)
 		}
 	}
 
+	for (auto type : _flowerTiles)
+	{
+		if (tileType == type)
+		{
+			flowerTiles.push_back(_tileHandler.CreateNewTile(position, tileType));
+			return;
+		}
+	}
+
 	drawTiles.push_back(_tileHandler.CreateNewTile(position, tileType));
 }
 
@@ -314,6 +342,11 @@ void Game::Render()
 		tile->Draw(gameWindow);
 	}
 
+	for (TileObject* tile : flowerTiles)
+	{
+		tile->Draw(gameWindow);
+	}
+
 	//draw all objects
 	for (auto& pair : objectsList)
 	{
@@ -342,6 +375,11 @@ Game::~Game()
 	}
 
 	for (auto tile : drawTiles)
+	{
+		delete tile;
+	}
+
+	for (auto tile : flowerTiles)
 	{
 		delete tile;
 	}

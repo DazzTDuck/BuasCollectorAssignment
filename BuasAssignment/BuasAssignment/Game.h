@@ -25,6 +25,7 @@ public:
 	std::map<std::string, GameObject*> objectsList;
 	std::vector<TileObject*> collisionTiles;
 	std::vector<TileObject*> drawTiles;
+	std::vector<TileObject*> flowerTiles;
 	std::vector<BackgroundSprite*> backgroundSprites;
 
 	sf::RenderWindow gameWindow;
@@ -53,6 +54,11 @@ private:
 		Rocks_EdgeL1, Rocks_EdgeL2, Rocks_UnderA, Rocks_UnderB, Rocks_UnderC,
 		Bridge_Begin, Bridge_MiddleA, Bridge_MiddleB, Bridge_MiddleC, Bridge_End,
 		RockGrass_Begin, RockGrass_End, Bridge_ExtraA, Bridge_ExtraB, Bridge_ExtraC, Chest
+	};
+
+	std::vector<TileTypes> _flowerTiles =
+	{
+		Mushroom_A, Mushroom_B, Flower_A, Flower_B, Flower_C, GrassPiece
 	};
 
 	float _viewScrollSpeed = 7.f;

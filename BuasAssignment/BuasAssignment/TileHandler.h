@@ -66,7 +66,8 @@ enum TileTypes
 	GrassPiece,
 	Flower_A, //60
 	Flower_B,
-	Flower_C
+	Flower_C,
+	SnailEnemy
 
 };
 

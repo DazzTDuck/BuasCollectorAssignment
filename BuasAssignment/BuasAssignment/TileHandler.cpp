@@ -74,12 +74,12 @@ const std::map<TileTypes, sf::IntRect> TileHandler::tileDefinitions =
 	{BridgeTop_ExtraA, {80, 80, 16, 16}},
 	{BridgeTop_ExtraB, {96, 80, 16, 16}},
 	{BridgeTop_ExtraC, {112, 80, 16, 16}},
-	{Mushroom_A, {240, 240, 16, 16}},
-	{Mushroom_B, {240, 256, 16, 16}},
-	{GrassPiece, {352, 272, 16, 16}},
-	{Flower_A, {256, 272, 16, 16}},
+	{Mushroom_A, {240, 208, 16, 32}},
+	{Mushroom_B, {240, 240, 16, 32}},
+	{GrassPiece, {352, 272, 16, 32}},
+	{Flower_A, {224, 256, 16, 32}},
 	{Flower_B, {256, 288, 16, 32}},
-	{Flower_C, {256, 320, 16, 32}}
-
+	{Flower_C, {256, 320, 16, 32}},
+	{SnailEnemy,{0, 0, 0, 0}},
 };
 
