@@ -24,9 +24,10 @@ GameObject::GameObject(Game* game)
 	_collider.setOutlineThickness(colliderDrawThickness);
 	_collider.setFillColor(sf::Color::Transparent);
 
-	//physic properties
+	//properties
 	_hasGravity = false;
 	objectMass = 0.f;
+
 }
 
 
@@ -88,7 +89,7 @@ void GameObject::Update(float deltaTime)
 	}
 
 	//update sprite position and scale
-	_sprite.setPosition(objectPosition);
+	_sprite.setPosition(objectPosition + _spriteCorrectionOffset);
 	_sprite.setScale(objectScale);
 	_sprite.setOrigin(spriteOrigin);
 

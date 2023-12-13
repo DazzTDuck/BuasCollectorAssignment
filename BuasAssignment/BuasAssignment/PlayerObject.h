@@ -17,9 +17,9 @@ public:
 	void CoinAdded();
 
 private:
-	float _playerSpeed = 300.f;
-	float _maxMoveVelocity = 10.f;
-	float _jumpHeight = 25.f;
+	float _playerSpeed = 200.f;
+	float _maxMoveVelocity = 5.f;
+	float _jumpHeight = 15.f;
 	float _jumpTime = 0.05f;
 	float _jumpReactivateDelay = .5f;
 	float _attackDelay = 0.125f * 4.f; //4 animation frames

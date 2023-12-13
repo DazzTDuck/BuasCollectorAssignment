@@ -32,8 +32,8 @@ public:
 	sf::View gameView;
 	sf::View uiView;
 
-	sf::Vector2f minGameViewCenter = { 640.f, 360.f};
-	sf::Vector2f maxGameViewCenter = { 1920.f, 360.f};
+	sf::Vector2f minGameViewCenter = { 330.f, 400.f };
+	sf::Vector2f maxGameViewCenter = { 1920.f, 400.f};
 
 	SoundManager* soundManager;
 	UserInterface* userInterface;
@@ -73,6 +73,6 @@ private:
 	sf::Sprite _backgroundSprite;
 	float _backgroundScrollOffset = 0.f;
 	float _backgroundDepth = 0.95f;
-	sf::Vector2f _backgroundScale = { 2.667f, 2.667f };
+	sf::Vector2f _backgroundScale = { 1.335f, 1.335f };
 	float _scrollSpeed = 10.f;
 };

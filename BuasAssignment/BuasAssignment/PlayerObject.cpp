@@ -1,6 +1,5 @@
 #include "PlayerObject.h"
 #include <iostream>
-
 #include "EnemyObject.h"
 #include "Game.h"
 #include "MathFunctions.h"
@@ -20,16 +19,14 @@ PlayerObject::PlayerObject(Game* game) :
 	_attackTexture.loadFromFile("Assets/Character/Attack-01/Attack-01-Sheet.png");
 	_deathTexture.loadFromFile("Assets/Character/Dead/Dead-Sheet.png");
 
-	//setup origin
-	spriteOrigin = { _sprite.getGlobalBounds().width * 1.15f, _sprite.getGlobalBounds().height * 0.5f};
-	_originalOrigin = spriteOrigin;
-
-	//setup sprite
+	//setup sprite texture
 	_sprite.setTexture(_idleTexture);
 	_sprite.setTextureRect({ 0, 0, 96, 80 });
+
+	//sprite values
 	_sprite.setPosition(objectPosition);
 	_sprite.setScale(objectScale);
-	_sprite.setOrigin(spriteOrigin);
+	_spriteCorrectionOffset = { -28.f, 6.f };
 
 	//make collider shape and size
 	_collider.setSize({ 21 * objectScale.x, 48 * objectScale.y});
@@ -37,14 +34,20 @@ PlayerObject::PlayerObject(Game* game) :
 	_collider.setOutlineThickness(colliderDrawThickness);
 	_collider.setFillColor(sf::Color::Transparent);
 
+	//setup origin
+	spriteOrigin = { _collider.getGlobalBounds().width * 0.4f, _collider.getGlobalBounds().height * 0.45f };
+
+	_originalOrigin = spriteOrigin;
+	_sprite.setOrigin(spriteOrigin);
+
 	//creating hitbox
-	_hitBox.setSize({ 30.f, 75.f });
+	_hitBox.setSize({ 20.f, 30.f });
 	_hitBox.setOutlineColor(sf::Color::White);
 	_hitBox.setOutlineThickness(colliderDrawThickness);
 	_hitBox.setFillColor(sf::Color::Transparent);
 
 	//offsetting player hitbox
-	_hitBoxOffset = { 50.f , 10.f};
+	_hitBoxOffset = { 25.f , 10.f};
 
 	//set start location
 	objectPosition = { 300.f, 250.f }; //set start position
@@ -56,7 +59,7 @@ PlayerObject::PlayerObject(Game* game) :
 
 	//object properties
 	objectName = "Player";
-	objectMass = 1.75f;
+	objectMass = 1.5f;
 	objectType = PLAYER;
 	hitPoints.SetHitPoints(3);
 
@@ -156,14 +159,16 @@ void PlayerObject::Update(float deltaTime)
 	}
 
 	//handle flipping of sprite based on movement speed
-	FlipSprite(2.f, 0.6f);
+	FlipSprite(1.f, 0.9f);
 
+	//make hitbox follow player, reverse X when flipped
+	_hitBox.setPosition(objectPosition + sf::Vector2f{ (_isFlipped ? -_hitBoxOffset.x : _hitBoxOffset.x), _hitBoxOffset.y });
+
+
+	//handle collisions
 	GameObjectColliding(deltaTime);
 
 	GameObject::Update(deltaTime); //rest of the GameObject update function
-
-	//make hitbox follow player, reverse X when flipped
-	_hitBox.setPosition(_collider.getPosition() + sf::Vector2f{(_isFlipped ? -_hitBoxOffset.x * 0.75f : _hitBoxOffset.x), _hitBoxOffset.y});
 
 	//timed delay value
 	if (_actionActive)

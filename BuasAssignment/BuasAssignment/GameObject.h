@@ -20,7 +20,7 @@ public:
 	explicit GameObject(Game* game);
 
 	std::string objectName = "Object";
-	sf::Vector2f objectScale = sf::Vector2f(2.f, 2.f);
+	sf::Vector2f objectScale = sf::Vector2f(1, 1);
 	sf::Vector2f objectPosition;
 	sf::Vector2f spriteOrigin = sf::Vector2f(0.f, 0.f);
 	sf::Vector2f respawnLocation;
@@ -80,6 +80,7 @@ protected:
 	sf::Sprite _sprite;
 	sf::Vector2f _pointL;
 	sf::Vector2f _pointR;
+	sf::Vector2f _spriteCorrectionOffset = { 0.f, 0.f };
 
 	sf::Texture _defaultTexture;
 };

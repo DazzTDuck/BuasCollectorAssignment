@@ -16,7 +16,8 @@ Game::Game() : // constructor
 	gameWindow(VideoMode(1280, 720), "Collector")
 {
 	gameView.setSize(1280, 720);
-	gameView.setCenter(640, 360); //center view on center of the screen
+	gameView.setCenter(330, 400); //center view on center of the screen
+	gameView.zoom(0.5f);
 	gameWindow.setView(gameView);
 
 	uiView.setSize(1280, 720);
@@ -190,33 +191,35 @@ void Game::CreateBackgroundLayers()
 {
 	//--create background sprites--
 
+	//TODO - resize remaining background sprites
+
 	//Lighter trees layer (+191 & +382)
-	CreateBackgroundSprite({ 0.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 352, 0, 96, 896 }, 0.9f);
-	CreateBackgroundSprite({ 191.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 464, 0, 96, 896 }, 0.9f);
-	CreateBackgroundSprite({ 382.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 576, 0, 127, 896 }, 0.9f);
+	//CreateBackgroundSprite({ 0.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 352, 0, 96, 896 }, 0.9f);
+	//CreateBackgroundSprite({ 191.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 464, 0, 96, 896 }, 0.9f);
+	//CreateBackgroundSprite({ 382.f, 200.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 576, 0, 127, 896 }, 0.9f);
 
-	CreateBackgroundSprite({ 450.f, 300.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 352, 0, 96, 896 }, 0.9f);
-	CreateBackgroundSprite({ 641.f, 300.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 464, 0, 96, 896 }, 0.9f);
-	CreateBackgroundSprite({ 832.f, 300.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 576, 0, 127, 896 }, 0.9f);
+	//CreateBackgroundSprite({ 450.f, 300.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 352, 0, 96, 896 }, 0.9f);
+	//CreateBackgroundSprite({ 641.f, 300.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 464, 0, 96, 896 }, 0.9f);
+	//CreateBackgroundSprite({ 832.f, 300.f }, { 2.f, 2.f }, _backgroundTreeTexture, { 576, 0, 127, 896 }, 0.9f);
 
-	//Darker trees layer (+159 & +318)
-	CreateBackgroundSprite({ -175.f, 400.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 0, 0, 96, 896 }, 0.85f);
-	CreateBackgroundSprite({ -16.f, 400.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 112, 0, 96, 896 }, 0.85f);
-	CreateBackgroundSprite({ 143.0f, 400.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 224, 0, 127, 896 }, 0.85f);
+	////Darker trees layer (+159 & +318)
+	//CreateBackgroundSprite({ -175.f, 400.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 0, 0, 96, 896 }, 0.85f);
+	//CreateBackgroundSprite({ -16.f, 400.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 112, 0, 96, 896 }, 0.85f);
+	//CreateBackgroundSprite({ 143.0f, 400.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 224, 0, 127, 896 }, 0.85f);
 
-	CreateBackgroundSprite({ 375.f, 300.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 0, 0, 96, 896 }, 0.85f);
-	CreateBackgroundSprite({ 534.f, 300.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 112, 0, 96, 896 }, 0.85f);
-	CreateBackgroundSprite({ 693.0f, 300.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 224, 0, 127, 896 }, 0.85f);
+	//CreateBackgroundSprite({ 375.f, 300.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 0, 0, 96, 896 }, 0.85f);
+	//CreateBackgroundSprite({ 534.f, 300.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 112, 0, 96, 896 }, 0.85f);
+	//CreateBackgroundSprite({ 693.0f, 300.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 224, 0, 127, 896 }, 0.85f);
 
-	CreateBackgroundSprite({ 800.f, 350.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 0, 0, 96, 896 }, 0.85f);
-	CreateBackgroundSprite({ 959.f, 350.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 112, 0, 96, 896 }, 0.85f);
-	CreateBackgroundSprite({ 1118.f, 350.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 224, 0, 127, 896 }, 0.85f);
+	//CreateBackgroundSprite({ 800.f, 350.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 0, 0, 96, 896 }, 0.85f);
+	//CreateBackgroundSprite({ 959.f, 350.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 112, 0, 96, 896 }, 0.85f);
+	//CreateBackgroundSprite({ 1118.f, 350.f }, { 1.67f, 1.67f }, _backgroundTreeTexture, { 224, 0, 127, 896 }, 0.85f);
 
 	//Biggest Yellow Tree
-	CreateBackgroundSprite({ 600.f, 50.f }, { 2.f, 2.f }, _treesTexture, { 0,0,107,368 }, 0.6f);
+	CreateBackgroundSprite({ 600.f, 240 }, { 1.f, 1.f }, _treesTexture, { 0,0,107,368 }, 0.6f);
 
 	//Big Yellow Tree
-	CreateBackgroundSprite({ 50.f, 150.f }, { 2.f, 2.f }, _treesTexture, { 0,391,110,313 }, 0.6f);
+	CreateBackgroundSprite({ 200, 280 }, { 1.f, 1.f }, _treesTexture, { 0,391,110,313 }, 0.6f);
 
 	//Medium Yellow Tree
 	//CreateBackgroundSprite({ 400.f, 350.f }, { 2.f, 2.f }, _treesTexture, { 0,720,92,208 }, 0.6f);
@@ -225,7 +228,7 @@ void Game::CreateBackgroundLayers()
 	//CreateBackgroundSprite({ 400.f, 400.f }, { 2.f, 2.f }, _treesTexture, { 0,994,94,144 }, 0.6f);
 
 	//Very Small Yellow Tree
-	CreateBackgroundSprite({ 335.f, 310.f }, { 2.f, 2.f }, _treesTexture, { 0,1092,75,108 }, 0.f);
+	CreateBackgroundSprite({ 360.f, 418.f }, {1.f, 1.f }, _treesTexture, { 0,1092,75,108 }, 0.f);
 
 	//----
 }
@@ -290,19 +293,19 @@ void Game::ResetGame()
 void Game::Update(float deltaTime)
 {
 	//reset sprite to 0 to make it a loop, because repeated textures are not infinite
-	if (_backgroundSprite.getPosition().x < -(1280.f - 640.f * floor((gameView.getCenter().x - 640.f) / 640.f)))
+	if (_backgroundSprite.getPosition().x < -(1280.f - minGameViewCenter.x * floor((gameView.getCenter().x - minGameViewCenter.x) / minGameViewCenter.x)))
 	{
 		_backgroundScrollOffset += 1280;
 	}
 
 	//scroll background & parallax for all background sprites
 	_backgroundScrollOffset += -_scrollSpeed * deltaTime;
-	_backgroundSprite.setPosition((gameView.getCenter().x - 640.f) * _backgroundDepth + _backgroundScrollOffset, 0.f);
+	_backgroundSprite.setPosition((gameView.getCenter().x - minGameViewCenter.x) * _backgroundDepth + _backgroundScrollOffset, 220.f);
 
 	//other background layers
 	for (auto sprite : backgroundSprites)
 	{
-		sprite->SetPosition({ sprite->GetStartPosition().x + (gameView.getCenter().x - 640.f) * sprite->depth, sprite->GetStartPosition().y});
+		sprite->SetPosition({ sprite->GetStartPosition().x + (gameView.getCenter().x - minGameViewCenter.x) * sprite->depth, sprite->GetStartPosition().y});
 	}
 
 	float target = objectsList["player"]->objectPosition.x;
@@ -342,15 +345,16 @@ void Game::Render()
 		tile->Draw(gameWindow);
 	}
 
-	for (TileObject* tile : flowerTiles)
-	{
-		tile->Draw(gameWindow);
-	}
-
 	//draw all objects
 	for (auto& pair : objectsList)
 	{
 		pair.second->Draw(gameWindow);
+	}
+
+	//draw flowers
+	for (TileObject* tile : flowerTiles)
+	{
+		tile->Draw(gameWindow);
 	}
 
 	//set view to uiView and render any UI elements
