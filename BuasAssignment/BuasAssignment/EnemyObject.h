@@ -31,6 +31,6 @@ private:
 	Animations _unhideAnimation;
 
 	bool _hidden = true;
-	float _sqrDistance = 500.f * 500.f; // 500 pixels
+	float _sqrDistance = 250.f * 250.f; // 250 pixels
 };
 

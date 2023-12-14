@@ -27,7 +27,6 @@ GameObject::GameObject(Game* game)
 	//properties
 	_hasGravity = false;
 	objectMass = 0.f;
-
 }
 
 
@@ -52,8 +51,8 @@ void GameObject::Update(float deltaTime)
 		}
 
 		//set ground collision points
-		_pointL = (objectPosition + sf::Vector2f(5.f, _collider.getGlobalBounds().height + 2.f));
-		_pointR = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width - 14.f, _collider.getGlobalBounds().height + 2.f));
+		_pointL = (objectPosition + sf::Vector2f(0.f, _collider.getGlobalBounds().height));
+		_pointR = (objectPosition + sf::Vector2f(_collider.getGlobalBounds().width - 8.f, _collider.getGlobalBounds().height));
 
 		//collision check
 		_grounded = false;

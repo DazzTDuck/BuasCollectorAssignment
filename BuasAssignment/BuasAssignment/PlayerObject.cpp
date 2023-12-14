@@ -41,7 +41,7 @@ PlayerObject::PlayerObject(Game* game) :
 	_sprite.setOrigin(spriteOrigin);
 
 	//creating hitbox
-	_hitBox.setSize({ 20.f, 30.f });
+	_hitBox.setSize({ 10.f, 30.f });
 	_hitBox.setOutlineColor(sf::Color::White);
 	_hitBox.setOutlineThickness(colliderDrawThickness);
 	_hitBox.setFillColor(sf::Color::Transparent);
@@ -162,7 +162,7 @@ void PlayerObject::Update(float deltaTime)
 	FlipSprite(1.f, 0.9f);
 
 	//make hitbox follow player, reverse X when flipped
-	_hitBox.setPosition(objectPosition + sf::Vector2f{ (_isFlipped ? -_hitBoxOffset.x : _hitBoxOffset.x), _hitBoxOffset.y });
+	_hitBox.setPosition(objectPosition + sf::Vector2f{ (_isFlipped ? -_hitBoxOffset.x * 0.55f : _hitBoxOffset.x), _hitBoxOffset.y });
 
 
 	//handle collisions
@@ -258,7 +258,7 @@ void PlayerObject::GameObjectColliding(float deltaTime)
 						object.second->hitPoints.RemoveHitPoint();
 
 						//push enemy back a bit in the direction you hit it
-						object.second->ApplyImpulse({ MathFunctions::Normalize(object.second->objectPosition - objectPosition).x * 350.f, 0.f }, deltaTime);
+						object.second->ApplyImpulse({ MathFunctions::Normalize(object.second->objectPosition - objectPosition).x * 250.f, 0.f }, deltaTime);
 						_hasAttacked = true;
 
 						object.second->PlaySound("EnemyHit", 20.f);
@@ -286,7 +286,7 @@ void PlayerObject::GameObjectColliding(float deltaTime)
 
 				ApplyImpulse({-MathFunctions::Normalize(enemy->objectPosition - objectPosition).x * _playerGetDamageKnockBack, 0.f }, deltaTime);
 
-				PlaySound("PlayerHit", 20.f);
+				PlaySound("PlayerHit", 25.f);
 			}
 		}
 	}

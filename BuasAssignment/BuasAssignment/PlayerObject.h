@@ -23,7 +23,7 @@ private:
 	float _jumpTime = 0.05f;
 	float _jumpReactivateDelay = .5f;
 	float _attackDelay = 0.125f * 4.f; //4 animation frames
-	float _playerGetDamageKnockBack = 3500.f;
+	float _playerGetDamageKnockBack = 600.f;
 
 	float _currentDelay = 0.f;
 	float _actionDelay = 0.f;

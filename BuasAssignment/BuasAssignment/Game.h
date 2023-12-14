@@ -53,7 +53,8 @@ private:
 		Grass_End, Invis_Collider, Coin, Rocks_EdgeR1, Rocks_EdgeR2,
 		Rocks_EdgeL1, Rocks_EdgeL2, Rocks_UnderA, Rocks_UnderB, Rocks_UnderC,
 		Bridge_Begin, Bridge_MiddleA, Bridge_MiddleB, Bridge_MiddleC, Bridge_End,
-		RockGrass_Begin, RockGrass_End, Bridge_ExtraA, Bridge_ExtraB, Bridge_ExtraC, Chest
+		RockGrass_Begin, RockGrass_End, Bridge_ExtraA, Bridge_ExtraB, Bridge_ExtraC, Chest,
+		Rock_Begin, Rock_MiddleA, Rock_MiddleB, Rock_MiddleC, Rock_End
 	};
 
 	std::vector<TileTypes> _flowerTiles =

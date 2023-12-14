@@ -14,11 +14,12 @@ EnemyObject::EnemyObject(Game* game):
 	_sprite.setTextureRect({288, 32, 48, 32});
 
 	//set collider size
-	_collider.setSize({45.f, 45.f});
+	_collider.setSize({22.f * objectScale.x, 22.f * objectScale.y});
 
 	//set origin
-	spriteOrigin = { _sprite.getGlobalBounds().width * 0.15f, _sprite.getGlobalBounds().width * 0.1f };
+	spriteOrigin = { _sprite.getGlobalBounds().width * 0.3f, _sprite.getGlobalBounds().width * 0.2f };
 	_originalOrigin = spriteOrigin;
+	_sprite.setOrigin(spriteOrigin);
 
 	//set starting position
 	objectPosition = {1400.f, 300.f};
@@ -27,7 +28,7 @@ EnemyObject::EnemyObject(Game* game):
 	//object properties
 	objectName = "Snail";
 	objectType = ENEMY;
-	_enemySpeed = 55.f;
+	_enemySpeed = 25.f;
 	objectMass = 1.2f;
 	hitPoints.SetHitPoints(1);
 
@@ -111,7 +112,7 @@ void EnemyObject::Update(float deltaTime)
 
 	//flip sprite functionality
 	if(hitPoints.GetCurrentHitPoints() != 0)
-		FlipSprite(2.f, 0.8f, true);
+		FlipSprite(1.f, 0.8f, true);
 }
 
 void EnemyObject::OnRespawn()
@@ -122,6 +123,7 @@ void EnemyObject::OnRespawn()
 	hitPoints.ResetHitPoints();
 	_sprite.setTextureRect({ 288, 32, 48, 32 });
 	_deathTime = 0.f;
+	_moveDirection = -1;
 
 	_hideAnimation.ResetAnimation();
 	_unhideAnimation.ResetAnimation();

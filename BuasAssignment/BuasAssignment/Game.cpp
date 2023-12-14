@@ -191,8 +191,6 @@ void Game::CreateBackgroundLayers()
 {
 	//--create background sprites--
 
-	//TODO - resize remaining background sprites
-
 	//Lighter trees layer (+95 & +190.f)
 	CreateBackgroundSprite({ -25.f * 1.1f, 295.f }, { 1.1f, 1.1f }, _backgroundTreeTexture, { 352, 0, 96, 896 }, 0.9f);
 	CreateBackgroundSprite({ 70.f * 1.1f, 295.f }, { 1.1f, 1.1f }, _backgroundTreeTexture, { 464, 0, 96, 896 }, 0.9f);
@@ -297,9 +295,9 @@ void Game::ResetGame()
 void Game::Update(float deltaTime)
 {
 	//reset sprite to 0 to make it a loop, because repeated textures are not infinite
-	if (_backgroundSprite.getPosition().x < -(1280.f - minGameViewCenter.x * floor((gameView.getCenter().x - minGameViewCenter.x) / minGameViewCenter.x)))
+	if (_backgroundSprite.getPosition().x < -(640.f - minGameViewCenter.x * floor((gameView.getCenter().x - minGameViewCenter.x) / minGameViewCenter.x)))
 	{
-		_backgroundScrollOffset += 1280;
+		_backgroundScrollOffset += 640.f;
 	}
 
 	//scroll background & parallax for all background sprites
@@ -349,16 +347,16 @@ void Game::Render()
 		tile->Draw(gameWindow);
 	}
 
-	//draw all objects
-	for (auto& pair : objectsList)
-	{
-		pair.second->Draw(gameWindow);
-	}
-
 	//draw flowers
 	for (TileObject* tile : flowerTiles)
 	{
 		tile->Draw(gameWindow);
+	}
+
+	//draw all objects
+	for (auto& pair : objectsList)
+	{
+		pair.second->Draw(gameWindow);
 	}
 
 	//set view to uiView and render any UI elements

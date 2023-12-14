@@ -52,7 +52,7 @@ const std::map<TileTypes, sf::IntRect> TileHandler::tileDefinitions =
 	{RockTop_MiddleA, {16, 80, 16, 16}},
 	{RockTop_MiddleB, {32, 80, 16, 16}},
 	{RockTop_MiddleC, {48, 80, 16, 16}},
-	{RockTop_End, {64, 0, 16, 16}},
+	{RockTop_End, {64,80, 16, 16}},
 	{Bridge_Begin, {80, 144, 16, 16}},
 	{Bridge_MiddleA, {96, 144, 16, 16}},
 	{Bridge_MiddleB, {112, 144, 16, 16}},
