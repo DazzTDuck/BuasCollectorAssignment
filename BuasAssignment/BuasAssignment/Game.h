@@ -33,7 +33,7 @@ public:
 	sf::View uiView;
 
 	sf::Vector2f minGameViewCenter = { 330.f, 400.f };
-	sf::Vector2f maxGameViewCenter = { 1920.f, 400.f};
+	sf::Vector2f maxGameViewCenter = {2880.f, 400.f};
 
 	SoundManager* soundManager;
 	UserInterface* userInterface;

@@ -46,7 +46,6 @@ void Game::Start()
 	PlayerObject* player = new PlayerObject(this);
 	objectsList["player"] = player;
 
-
 	//read world file
 	std::vector<std::vector<int>> testVector;
 	ReadWorldFile(testVector);
@@ -60,44 +59,51 @@ void Game::Start()
 		{
 			int element = testVector[i][j];
 
-			if (element == Empty) //empty value
-				continue;
-
-			if(element == Coin)
+			switch (static_cast<TileTypes>(element))
 			{
-				//create coin objects
-				GameObject* coin = CreateGameObject("Coin" + std::to_string(coinNumber++));
-				coin->objectName = "Coin";
-				coin->objectPosition = { 16.f * j, 16.f * i };
-				coin->respawnLocation = coin->objectPosition;
-
-				player->CoinAdded();
-
-				continue;
+				case Empty:
+					//nothing
+					break;
+				case Player:
+					//set player position
+					player->objectPosition = { 16.f * j, 16.f * i };
+					player->respawnLocation = player->objectPosition;
+					break;
+				case Coin:
+					//create coin objects
+					GameObject* coin;
+					coin = CreateGameObject("Coin" + std::to_string(coinNumber++));
+					coin->GetSprite().setTextureRect(TileHandler::tileDefinitions.at(Coin));
+					coin->objectName = "Coin";
+					coin->objectPosition = { 16.f * j, 16.f * i };
+					coin->respawnLocation = coin->objectPosition;
+					//register coin 
+					player->CoinAdded();
+					break;
+				case Chest:
+					//create chest for the end state
+					GameObject* chest;
+					chest = CreateGameObject("Chest" + std::to_string(coinNumber++));
+					chest->GetSprite().setTextureRect(TileHandler::tileDefinitions.at(Chest));
+					chest->objectName = "Chest";
+					chest->objectPosition = { 16.f * j, 16.f * i };
+					chest->respawnLocation = chest->objectPosition;
+					break;
+				case SnailEnemy:
+					//create snail enemy
+					EnemyObject* snailEnemy;
+					snailEnemy = new EnemyObject(this);
+					snailEnemy->objectName = "Snail";
+					snailEnemy->objectPosition = { 16.f * j, 16.f * i };
+					snailEnemy->respawnLocation = snailEnemy->objectPosition;
+					objectsList["snail"] = snailEnemy;
+					break;
+				case BoarEnemy:
+					break;
+				default: //create tile
+					CreateGameTile({ 16.f * j, 16.f * i }, static_cast<TileTypes>(element));
+					break;
 			}
-
-			if(element == Chest)
-			{
-				//create chest for the end state
-				GameObject* chest = CreateGameObject("Chest" + std::to_string(coinNumber++));
-				chest->objectName = "Chest";
-				chest->objectPosition = { 16.f * j, 16.f * i };
-				chest->respawnLocation = chest->objectPosition;
-
-				continue;
-			}
-
-			if(element == SnailEnemy)
-			{
-				EnemyObject* snailEnemy = new EnemyObject(this);
-				snailEnemy->objectName = "Snail";
-				snailEnemy->objectPosition = { 16.f * j, 16.f * i };
-				snailEnemy->respawnLocation = snailEnemy->objectPosition;
-				objectsList["snail"] = snailEnemy;
-				continue;
-			}
-
-			CreateGameTile({16.f * j, 16.f * i}, static_cast<TileTypes>(element));
 		}
 	}
 

@@ -61,3 +61,6 @@ GrassPiece, = 59
 Flower_A, //60
 Flower_B, = 61
 Flower_C = 62
+Snail = 63
+Boar = 64
+Player = 65

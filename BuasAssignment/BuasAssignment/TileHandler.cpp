@@ -24,7 +24,7 @@ const std::map<TileTypes, sf::IntRect> TileHandler::tileDefinitions =
 	{Grass_MiddleC, {48, 16, 16, 16}},
 	{Grass_End, {64, 16, 16, 16}},
 	{Invis_Collider, {80, 0, 16 ,16}},
-	{Coin, {0, 0, 0, 0}},
+	{Coin, {240, 336, 16, 16}},
 	{Rocks_EdgeL1, {0, 32, 16, 16}},
 	{Rocks_EdgeL2, {0, 48, 16, 16}},
 	{Rocks_EdgeCornerL, {0, 64, 16, 16}},
@@ -81,5 +81,7 @@ const std::map<TileTypes, sf::IntRect> TileHandler::tileDefinitions =
 	{Flower_B, {256, 288, 16, 32}},
 	{Flower_C, {256, 320, 16, 32}},
 	{SnailEnemy,{0, 0, 0, 0}},
+	{BoarEnemy,{0, 0, 0, 0}},
+	{Player,{0, 0, 0, 0}},
 };
 

@@ -72,24 +72,32 @@ void EnemyObject::Update(float deltaTime)
 		return;
 	}
 
-	if(MathFunctions::GetSqrDistance(objectPosition, _game->objectsList["player"]->objectPosition) < _sqrDistance)
-	{
-		if (_hidden)
-		{
-			//unhide snail
-			_unhideAnimation.PlayAnimation(_sprite, deltaTime);
+	float distance = MathFunctions::GetSqrDistance(objectPosition, _game->objectsList["player"]->objectPosition);
 
-			if (_unhideAnimation.HasLastFramePlayed()) //on last frame
-			{
-				_hidden = false;
-				_unhideAnimation.ResetAnimation();
-			}
-				
+	if (_hidden && _canShow)
+	{
+		//unhide snail
+		_unhideAnimation.PlayAnimation(_sprite, deltaTime);
+
+		if (_unhideAnimation.HasLastFramePlayed()) //on last frame
+		{
+			_hidden = false;
+			_unhideAnimation.ResetAnimation();
+			_hideAnimation.ResetAnimation();
 		}
-		else
+
+	}
+
+	if(distance < _sqrDistance)
+	{
+		_canShow = true;
+		if(!_hidden)
 		{
 			//play moving animation
 			_moveAnimation.PlayAnimation(_sprite, deltaTime);
+
+			//reset animation
+			_hideAnimation.ResetAnimation();
 
 			if (_moveAnimation.GetAnimationStep() > 4)
 				MoveSideToSide(deltaTime); //actually move enemy
@@ -97,15 +105,23 @@ void EnemyObject::Update(float deltaTime)
 	}
 	else
 	{
+		if(_canShow)
+		{
+			_hidden = false;
+			_canShow = false;
+			_hideAnimation.ResetAnimation();
+		}
+
 		//hide snail if player is too far away
 		if(!_hidden)
 		{
 			_hideAnimation.PlayAnimation(_sprite, deltaTime);
 
-			if (_hideAnimation.HasLastFramePlayed()) //on last frame
+			if(_hideAnimation.HasLastFramePlayed())
 			{
-				_hidden = true;
+				_unhideAnimation.ResetAnimation();
 				_hideAnimation.ResetAnimation();
+				_hidden = true;
 			}
 		}
 	}
