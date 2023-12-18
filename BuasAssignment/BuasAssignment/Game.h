@@ -19,7 +19,7 @@ public:
 	void Start();
 	GameObject* CreateGameObject(const std::string& objectName);
 	void CreateGameTile(sf::Vector2f position, TileTypes tileType);
-	void CreateBackgroundSprite(sf::Vector2f position, sf::Vector2f scale, sf::Texture& texture, sf::IntRect rect, float newDepth);
+	void CreateBackgroundSprite(sf::Vector2f position, sf::Vector2f scale, sf::Texture& texture, sf::IntRect rect, float newDepth, bool foreground = false);
 	void ResetGame();
 
 	std::map<std::string, GameObject*> objectsList;
@@ -27,6 +27,7 @@ public:
 	std::vector<TileObject*> drawTiles;
 	std::vector<TileObject*> flowerTiles;
 	std::vector<BackgroundSprite*> backgroundSprites;
+	std::vector<BackgroundSprite*> foregroundSprites;
 
 	sf::RenderWindow gameWindow;
 	sf::View gameView;

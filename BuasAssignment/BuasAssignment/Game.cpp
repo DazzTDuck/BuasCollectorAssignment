@@ -225,18 +225,25 @@ void Game::CreateBackgroundLayers()
 
 	//Biggest Yellow Tree
 	CreateBackgroundSprite({ 500.f, 240.f }, { 1.f, 1.f }, _treesTexture, { 0,0,107,368 }, 0.6f);
+	CreateBackgroundSprite({ 925.f, 240.f }, { 1.f, 1.f }, _treesTexture, { 0,0,107,368 }, 0.6f);
+	CreateBackgroundSprite({ 1200.f, 300.f }, { 1.f, 1.f }, _treesTexture, { 0,0,107,368 }, 0.6f);
+	CreateBackgroundSprite({ 3550.f, 325.f }, { 1.f, 1.f }, _treesTexture, { 0,0,107,368 }, -0.6f, true);
 
 	//Big Yellow Tree
 	CreateBackgroundSprite({ 125.f, 280.f }, { 1.f, 1.f }, _treesTexture, { 0,391,110,313 }, 0.6f);
+	CreateBackgroundSprite({ 1050.f, 340.f }, { 1.f, 1.f }, _treesTexture, { 0,391,110,313 }, 0.6f);
+	CreateBackgroundSprite({ 1600.f, 280.f }, { 1.f, 1.f }, _treesTexture, { 0,391,110,313 }, 0.6f);
+	CreateBackgroundSprite({ 1750.f, 300.f }, { 1.f, 1.f }, _treesTexture, { 0,391,110,313 }, -0.6f, true);
 
 	//Medium Yellow Tree
-	//CreateBackgroundSprite({ 400.f, 350.f }, { 2.f, 2.f }, _treesTexture, { 0,720,92,208 }, 0.6f);
+	CreateBackgroundSprite({ 800.f, 400.f }, { 1.f, 1.f }, _treesTexture, { 0,720,92,208 }, 0.6f);
+	CreateBackgroundSprite({ 1400.f, 385.f }, { 1.f, 1.f }, _treesTexture, { 0,720,92,208 }, 0.6f);
 
 	//Small Yellow Tree
-	//CreateBackgroundSprite({ 400.f, 400.f }, { 2.f, 2.f }, _treesTexture, { 0,994,94,144 }, 0.6f);
-
+	CreateBackgroundSprite({ 1850.f, 225.f }, { 1.f, 1.f }, _treesTexture, { 0,944,94,144 }, 0.f);
+	
 	//Very Small Yellow Tree
-	CreateBackgroundSprite({ 360.f, 385.f }, {1.f, 1.f }, _treesTexture, { 0,1092,75,108 }, 0.f);
+	CreateBackgroundSprite({ 400.f, 385.f }, {1.f, 1.f }, _treesTexture, { 0,1092,75,108 }, 0.f);
 
 	//----
 }
@@ -273,10 +280,11 @@ void Game::CreateGameTile(Vector2f position, TileTypes tileType)
 	drawTiles.push_back(_tileHandler.CreateNewTile(position, tileType));
 }
 
-void Game::CreateBackgroundSprite(sf::Vector2f position, sf::Vector2f scale, sf::Texture& texture, sf::IntRect rect, float newDepth)
+void Game::CreateBackgroundSprite(sf::Vector2f position, sf::Vector2f scale, sf::Texture& texture, sf::IntRect rect, float newDepth, bool foreground)
 {
 	BackgroundSprite* newSprite = new BackgroundSprite(position, scale, texture, rect, newDepth);
-	backgroundSprites.push_back(newSprite);
+
+	foreground ? foregroundSprites.push_back(newSprite) : backgroundSprites.push_back(newSprite);
 }
 
 void Game::ResetGame()
@@ -314,6 +322,11 @@ void Game::Update(float deltaTime)
 	for (auto sprite : backgroundSprites)
 	{
 		sprite->SetPosition({ sprite->GetStartPosition().x + (gameView.getCenter().x - minGameViewCenter.x) * sprite->depth, sprite->GetStartPosition().y});
+	}
+
+	for (auto sprite : foregroundSprites)
+	{
+		sprite->SetPosition({ sprite->GetStartPosition().x + (gameView.getCenter().x - minGameViewCenter.x) * sprite->depth, sprite->GetStartPosition().y });
 	}
 
 	float target = objectsList["player"]->objectPosition.x;
@@ -365,6 +378,13 @@ void Game::Render()
 		pair.second->Draw(gameWindow);
 	}
 
+	//draw foreground
+	for (BackgroundSprite* sprite : foregroundSprites)
+	{
+		gameWindow.draw(*sprite->GetSprite());
+	}
+
+
 	//set view to uiView and render any UI elements
 	gameWindow.setView(uiView);
 	userInterface->Draw(gameWindow);
@@ -401,6 +421,10 @@ Game::~Game()
 		delete sprite;
 	}
 
+	for (auto sprite : foregroundSprites)
+	{
+		delete sprite;
+	}
 
 	delete userInterface;
 	delete soundManager;
