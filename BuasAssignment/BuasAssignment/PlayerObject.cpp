@@ -232,62 +232,75 @@ void PlayerObject::GameObjectColliding(float deltaTime)
 		if (object.second == this || object.second->isDisabled)
 			continue;
 
-		//coin collection
-		if (object.second->objectName == "Coin")
+		switch (object.second->objectType)
 		{
-			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
-			{
-				_coinsCollected++;
-				object.second->isDisabled = true;
-
-				_game->userInterface->UpdateCoinsText(_coinsCollected, _maxCoins);
-				PlaySound("Collect", 20.f);
-			}
-		}
-
-		//player attacking overlap
-		if (object.second->objectType == ENEMY)
-		{
-			if (_attacking && !_hasAttacked && object.second->hitPoints.GetCurrentHitPoints() != 0)
-			{
-				//only attack second last frame in swings
-				if (_attackAnimation.GetAnimationStep() == 3 || _attackAnimation.GetAnimationStep() == 7)
+			case COIN: //Coin collecting
 				{
-					if (MathFunctions::AreBoundsColliding(_hitBox.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
+					if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
 					{
-						object.second->hitPoints.RemoveHitPoint();
+						_coinsCollected++;
+						object.second->isDisabled = true;
 
-						//push enemy back a bit in the direction you hit it
-						object.second->ApplyImpulse({ MathFunctions::Normalize(object.second->objectPosition - objectPosition).x * 250.f, 0.f }, deltaTime);
-						_hasAttacked = true;
-
-						object.second->PlaySound("EnemyHit", 20.f);
-
-						return; //make sure player does not take damage in same frame as hitting enemy
+						_game->userInterface->UpdateCoinsText(_coinsCollected, _maxCoins);
+						PlaySound("Collect", 20.f);
 					}
 				}
-			}
-			
-			//do damage to player
-			if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision) && !_isDead && !_actionActive && object.second->hitPoints.GetCurrentHitPoints() != 0)
-			{
-				EnemyObject* enemy = dynamic_cast<EnemyObject*>(object.second);
+				break;
+			case CHEST: //Colliding with ending chest
+				{
+					if(_coinsCollected != _maxCoins)
+						continue;
 
-				hitPoints.RemoveHitPoint();
+					_game->userInterface->gameCompleted = MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision);
 
-				//update UI
-				_game->userInterface->UpdateHearts(hitPoints.GetCurrentHitPoints());
+					if (_game->userInterface->gameCompleted && Input::GetInput(sf::Keyboard::R))
+					{
+						_game->ResetGame();
+					}
+				}
+				break;
+			case ENEMY: //colliding with enemy types
+				{
+					if (_attacking && !_hasAttacked && object.second->hitPoints.GetCurrentHitPoints() != 0)
+					{
+						//only attack second last frame in swings
+						if (_attackAnimation.GetAnimationStep() == 3 || _attackAnimation.GetAnimationStep() == 7)
+						{
+							if (MathFunctions::AreBoundsColliding(_hitBox.getGlobalBounds(), object.second->GetBounds(), _overlapCollision))
+							{
+								object.second->hitPoints.RemoveHitPoint();
 
-				_actionActive = true;
-				_actionDelay = 0.f;
-				
-				_isDead = hitPoints.GetCurrentHitPoints() == 0;
-				_currentDelay = _isDead ? _deathDelay : _hitDelay;	
+								//push enemy back a bit in the direction you hit it
+								object.second->ApplyImpulse({ MathFunctions::Normalize(object.second->objectPosition - objectPosition).x * 250.f, 0.f }, deltaTime);
+								_hasAttacked = true;
 
-				ApplyImpulse({-MathFunctions::Normalize(enemy->objectPosition - objectPosition).x * _playerGetDamageKnockBack, 0.f }, deltaTime);
+								object.second->PlaySound("EnemyHit", 20.f);
 
-				PlaySound("PlayerHit", 25.f);
-			}
+								return; //make sure player does not take damage in same frame as hitting enemy
+							}
+						}
+					}
+
+					//do damage to player
+					if (MathFunctions::AreBoundsColliding(_collider.getGlobalBounds(), object.second->GetBounds(), _overlapCollision) && !_isDead && !_actionActive && object.second->hitPoints.GetCurrentHitPoints() != 0)
+					{
+						hitPoints.RemoveHitPoint();
+
+						//update UI
+						_game->userInterface->UpdateHearts(hitPoints.GetCurrentHitPoints());
+
+						_actionActive = true;
+						_actionDelay = 0.f;
+
+						_isDead = hitPoints.GetCurrentHitPoints() == 0;
+						_currentDelay = _isDead ? _deathDelay : _hitDelay;
+
+						ApplyImpulse({ -MathFunctions::Normalize(object.second->objectPosition - objectPosition).x * _playerGetDamageKnockBack, 0.f }, deltaTime);
+
+						PlaySound("PlayerHit", 25.f);
+					}
+				}
+				break;
 		}
 	}
 }
@@ -300,6 +313,7 @@ void PlayerObject::OnRespawn()
 
 	//reset text UI
 	_game->userInterface->UpdateCoinsText(_coinsCollected, _maxCoins);
+	_game->userInterface->gameCompleted = false;
 
 	//reset animations
 	hitPoints.ResetHitPoints();

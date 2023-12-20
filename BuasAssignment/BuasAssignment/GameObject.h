@@ -9,7 +9,9 @@ enum ObjectType
 {
 	GAMEOBJECT,
 	ENEMY,
-	PLAYER
+	PLAYER,
+	COIN,
+	CHEST
 };
 
 class Game;

@@ -17,6 +17,7 @@ public:
 
 	std::vector<sf::Sprite*> uiSprites;
 	std::vector<sf::Text*> uiText;
+	sf::Text endText;
 
 	sf::Texture heartTexture;
 	sf::Texture coinTexture;
@@ -25,6 +26,8 @@ public:
 	Animations heartLoseAnimation;
 
 	~UserInterface();
+
+	bool gameCompleted = false;
 
 private:
 

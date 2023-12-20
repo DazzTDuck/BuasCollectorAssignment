@@ -40,6 +40,13 @@ UserInterface::UserInterface():
 		uiSprites.push_back(heart);
 	}
 
+	//create ending text
+	endText.setFont(textFont);
+	endText.setString("You collected all the coins and completed the game! \n            Press 'R' to restart the game");
+	endText.setOutlineColor(sf::Color::Black);
+	endText.setOutlineThickness(1.f);
+	endText.setCharacterSize(32.f);
+	endText.setPosition(325.f, 300.f);
 }
 void UserInterface::Update(float deltaTime)
 {
@@ -68,6 +75,11 @@ void UserInterface::Draw(sf::RenderWindow& window)
 	for(sf::Sprite* sprite : uiSprites)
 	{
 		window.draw(*sprite);
+	}
+
+	if(gameCompleted)
+	{
+		window.draw(endText);
 	}
 }
 

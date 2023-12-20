@@ -75,6 +75,7 @@ void Game::Start()
 					coin = CreateGameObject("Coin" + std::to_string(coinNumber++));
 					coin->GetSprite().setTextureRect(TileHandler::tileDefinitions.at(Coin));
 					coin->objectName = "Coin";
+					coin->objectType = COIN;
 					coin->objectPosition = { 16.f * j, 16.f * i };
 					coin->respawnLocation = coin->objectPosition;
 					//register coin 
@@ -86,6 +87,7 @@ void Game::Start()
 					chest = CreateGameObject("Chest" + std::to_string(coinNumber++));
 					chest->GetSprite().setTextureRect(TileHandler::tileDefinitions.at(Chest));
 					chest->objectName = "Chest";
+					chest->objectType = CHEST;
 					chest->objectPosition = { 16.f * j, 16.f * i };
 					chest->respawnLocation = chest->objectPosition;
 					break;
