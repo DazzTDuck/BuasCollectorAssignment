@@ -80,8 +80,8 @@ const std::map<TileTypes, sf::IntRect> TileHandler::tileDefinitions =
 	{Flower_A, {224, 256, 16, 32}},
 	{Flower_B, {256, 288, 16, 32}},
 	{Flower_C, {256, 320, 16, 32}},
-	{SnailEnemy,{0, 0, 0, 0}},
-	{BoarEnemy,{0, 0, 0, 0}},
+	{Snail,{0, 0, 0, 0}},
+	{Boar,{0, 0, 0, 0}},
 	{Player,{0, 0, 0, 0}},
 };
 

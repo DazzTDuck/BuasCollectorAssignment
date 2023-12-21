@@ -4,6 +4,7 @@
 #include <sstream>
 #include <random>
 #include "BackgroundSprite.h"
+#include "BoarEnemy.h"
 #include "EnemyObject.h"
 #include "MathFunctions.h"
 #include "GameInput.h"
@@ -91,16 +92,24 @@ void Game::Start()
 					chest->objectPosition = { 16.f * j, 16.f * i };
 					chest->respawnLocation = chest->objectPosition;
 					break;
-				case SnailEnemy:
+				case Snail:
 					//create snail enemy
 					EnemyObject* snailEnemy;
 					snailEnemy = new EnemyObject(this);
 					snailEnemy->objectName = "Snail";
 					snailEnemy->objectPosition = { 16.f * j, 16.f * i };
 					snailEnemy->respawnLocation = snailEnemy->objectPosition;
-					objectsList["snail"] = snailEnemy;
+					enemyCount++;
+					objectsList["snail" + std::to_string(enemyCount)] = snailEnemy;
 					break;
-				case BoarEnemy:
+				case Boar:
+					//create Boar enemy
+					BoarEnemy* boarEnemy;
+					boarEnemy = new BoarEnemy(this);
+					boarEnemy->objectPosition = { 16.f * j, 16.f * i };
+					boarEnemy->respawnLocation = boarEnemy->objectPosition;
+					enemyCount++;
+					objectsList["boar" + std::to_string(enemyCount)] = boarEnemy;
 					break;
 				default: //create tile
 					CreateGameTile({ 16.f * j, 16.f * i }, static_cast<TileTypes>(element));

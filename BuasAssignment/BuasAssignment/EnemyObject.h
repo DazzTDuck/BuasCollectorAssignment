@@ -25,9 +25,9 @@ protected:
 
 	Animations _moveAnimation;
 	Animations _deathAnimation;
+	Animations _idleAnimation;
 
 private:
-	Animations _hideAnimation;
 	Animations _unhideAnimation;
 
 	bool _hidden = true;

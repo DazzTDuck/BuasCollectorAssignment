@@ -6,7 +6,7 @@ EnemyObject::EnemyObject(Game* game):
 	GameObject(game),
 	_moveAnimation(8, 48, 32, 0),
 	_deathAnimation(8, 48, 32, 96),
-	_hideAnimation(8, 48, 32, 32),
+	_idleAnimation(8, 48, 32, 32),
 	_unhideAnimation(8, 48, 32, 64)
 {
 	//set texture
@@ -48,9 +48,6 @@ void EnemyObject::Update(float deltaTime)
 {
 	GameObject::Update(deltaTime);
 
-	if (isDisabled)
-		return;
-
 	if(hitPoints.GetCurrentHitPoints() == 0) //enemy is dead
 	{
 		if(!_stopDeathAnimation)
@@ -83,7 +80,7 @@ void EnemyObject::Update(float deltaTime)
 		{
 			_hidden = false;
 			_unhideAnimation.ResetAnimation();
-			_hideAnimation.ResetAnimation();
+			_idleAnimation.ResetAnimation();
 		}
 
 	}
@@ -97,7 +94,7 @@ void EnemyObject::Update(float deltaTime)
 			_moveAnimation.PlayAnimation(_sprite, deltaTime);
 
 			//reset animation
-			_hideAnimation.ResetAnimation();
+			_idleAnimation.ResetAnimation();
 
 			if (_moveAnimation.GetAnimationStep() > 4)
 				MoveSideToSide(deltaTime); //actually move enemy
@@ -109,18 +106,18 @@ void EnemyObject::Update(float deltaTime)
 		{
 			_hidden = false;
 			_canShow = false;
-			_hideAnimation.ResetAnimation();
+			_idleAnimation.ResetAnimation();
 		}
 
 		//hide snail if player is too far away
 		if(!_hidden)
 		{
-			_hideAnimation.PlayAnimation(_sprite, deltaTime);
+			_idleAnimation.PlayAnimation(_sprite, deltaTime);
 
-			if(_hideAnimation.HasLastFramePlayed())
+			if(_idleAnimation.HasLastFramePlayed())
 			{
 				_unhideAnimation.ResetAnimation();
-				_hideAnimation.ResetAnimation();
+				_idleAnimation.ResetAnimation();
 				_hidden = true;
 			}
 		}
@@ -141,7 +138,7 @@ void EnemyObject::OnRespawn()
 	_deathTime = 0.f;
 	_moveDirection = -1;
 
-	_hideAnimation.ResetAnimation();
+	_idleAnimation.ResetAnimation();
 	_unhideAnimation.ResetAnimation();
 	_moveAnimation.ResetAnimation();
 	_deathAnimation.ResetAnimation();

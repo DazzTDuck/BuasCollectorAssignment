@@ -77,4 +77,5 @@ private:
 	float _backgroundDepth = 0.95f;
 	sf::Vector2f _backgroundScale = { 1.335f, 1.335f };
 	float _scrollSpeed = 10.f;
+	int enemyCount = 0;
 };

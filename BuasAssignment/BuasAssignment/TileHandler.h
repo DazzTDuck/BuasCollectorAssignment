@@ -67,8 +67,8 @@ enum TileTypes
 	Flower_A, //60
 	Flower_B,
 	Flower_C,
-	SnailEnemy,
-	BoarEnemy,
+	Snail,
+	Boar,
 	Player
 
 };

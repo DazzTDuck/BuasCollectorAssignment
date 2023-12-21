@@ -36,7 +36,7 @@ private:
 	bool _hasAttacked = false;
 	bool _isDead = false;
 	float _deathDelay = 0.125f * 9.f; //9 animation frames
-	float _hitDelay = 1.0f;
+	float _hitDelay = 0.5f;
 
 	sf::Vector2f _pointHead = { 0.f, 0.f };
 

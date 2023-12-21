@@ -75,6 +75,9 @@
     <ClCompile Include="UserInterface.cpp">
       <Filter>Source Files\Classes\Components</Filter>
     </ClCompile>
+    <ClCompile Include="BoarEnemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UserInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoarEnemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
