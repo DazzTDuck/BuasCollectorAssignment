@@ -137,6 +137,7 @@ void EnemyObject::OnRespawn()
 	_sprite.setTextureRect({ 288, 32, 48, 32 });
 	_deathTime = 0.f;
 	_moveDirection = -1;
+	_moveLeft = true;
 
 	_idleAnimation.ResetAnimation();
 	_unhideAnimation.ResetAnimation();

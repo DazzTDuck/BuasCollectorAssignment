@@ -6,8 +6,8 @@ BoarEnemy::BoarEnemy(Game* game):
 	EnemyObject(game)
 {
 	_idleAnimation = Animations(4, 48, 32, 32);
-	_deathAnimation = Animations(4, 48, 32, 32);
-	_moveAnimation = Animations(6, 48, 32, 32);
+	_deathAnimation = Animations(4, 48, 32, 0);
+	_moveAnimation = Animations(6, 48, 32, 64);
 
 	//set texture
 	_defaultTexture.loadFromFile("Assets/Mob/Boar/boar-brown-all.png");
@@ -25,35 +25,48 @@ BoarEnemy::BoarEnemy(Game* game):
 	//object properties
 	objectName = "Boar";
 	objectType = ENEMY;
-	_enemySpeed = 35.f;
+	_enemySpeed = 80.f;
 	objectMass = 1.35f;
 	hitPoints.SetHitPoints(1);
+	_deathDelay = 0.7f;
 
 	//physics properties
 	_objectDrag = 0.91f;
 	_hasGravity = true;
 
 	//debug bounding box
-	drawCollider = true;
+	//drawCollider = true;
 }
 
 void BoarEnemy::Update(float deltaTime)
 {
 	GameObject::Update(deltaTime);
 
-	_idleAnimation.PlayAnimation(_sprite, deltaTime);
-}
+	if (hitPoints.GetCurrentHitPoints() == 0) //enemy is dead
+	{
+		if (!_stopDeathAnimation)
+			_deathAnimation.PlayAnimation(_sprite, deltaTime);
 
-void BoarEnemy::OnRespawn()
-{
-	GameObject::OnRespawn();
+		if (_deathAnimation.HasLastFramePlayed()) //on last frame stop animating
+			_stopDeathAnimation = true;
 
-	hitPoints.ResetHitPoints();
-	_sprite.setTextureRect({ 288, 32, 48, 32 });
-	_deathTime = 0.f;
-	_moveDirection = -1;
+		_deathTime += deltaTime;
 
-	_idleAnimation.ResetAnimation();
-	_moveAnimation.ResetAnimation();
-	_deathAnimation.ResetAnimation();
+		if (_deathTime > _deathDelay && _stopDeathAnimation) //remove enemy after certain time
+		{
+			_deathAnimation.ResetAnimation();
+			_stopDeathAnimation = false;
+
+			isDisabled = true; //disable enemy
+		}
+
+		return;
+	}
+
+	_moveAnimation.PlayAnimation(_sprite, deltaTime);
+	MoveSideToSide(deltaTime);
+
+	//flip sprite functionality
+	if (hitPoints.GetCurrentHitPoints() != 0)
+		FlipSprite(1.f, 0.7f, true);
 }

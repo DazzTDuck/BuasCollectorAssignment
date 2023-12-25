@@ -6,6 +6,5 @@ public:
 	explicit BoarEnemy(Game* game);
 
 	void Update(float deltaTime) override;
-	void OnRespawn() override;
 };
 
