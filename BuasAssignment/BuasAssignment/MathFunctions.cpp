@@ -31,14 +31,19 @@ float MathFunctions::GetSqrDistance(sf::Vector2f a, sf::Vector2f b)
 
 float MathFunctions::Clamp01(float value)
 {
-	if (value < 0.f) return 0.f;
-	if (value > 1.f) return 1.f;
+	if (value < 0.f) 
+		return 0.f;
+	if (value > 1.f) 
+		return 1.f;
+
 	return value;
 }
 
 
 bool MathFunctions::AreBoundsColliding(sf::FloatRect aRect, sf::FloatRect bRect, sf::Vector2f& penetration)
 {
+	//calculation to see if 2 rects are colliding, using the Minkowski Difference method
+
 	sf::FloatRect minkowskiDifference;
 
 	minkowskiDifference.top = aRect.top - (bRect.top + bRect.height);

@@ -139,6 +139,7 @@ void Game::Start()
 
 void Game::Run()
 {
+	//Make game run on set frame rate
 	Clock clock;
 	Time timeSinceLastUpdate = Time::Zero;
 
@@ -185,6 +186,7 @@ void Game::EventHandler()
 
 void Game::ReadWorldFile(std::vector<std::vector<int>>& output)
 {
+	//read the world file and save to 2d vector array to load correct tiles
 	std::ifstream file("world.txt");
 	std::string line;
 
@@ -262,6 +264,8 @@ void Game::CreateBackgroundLayers()
 
 GameObject* Game::CreateGameObject(const std::string& objectName)
 {
+	//Create a new game object and save it to the object list
+
 	GameObject* newObject = new GameObject(this);
 	objectsList[objectName] = newObject;
 
@@ -270,6 +274,8 @@ GameObject* Game::CreateGameObject(const std::string& objectName)
 
 void Game::CreateGameTile(Vector2f position, TileTypes tileType)
 {
+	//create a game tile and put it in the correct vector based on the type
+
 	for(auto type : _tilesToCollide)
 	{
 		if(tileType == type)

@@ -164,7 +164,6 @@ void PlayerObject::Update(float deltaTime)
 	//make hitbox follow player, reverse X when flipped
 	_hitBox.setPosition(objectPosition + sf::Vector2f{ (_isFlipped ? -_hitBoxOffset.x * 0.55f : _hitBoxOffset.x), _hitBoxOffset.y });
 
-
 	//handle collisions
 	GameObjectColliding(deltaTime);
 
