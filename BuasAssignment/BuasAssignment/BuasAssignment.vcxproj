@@ -149,6 +149,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathFunctions.cpp" />
     <ClCompile Include="PlayerObject.cpp" />
+    <ClCompile Include="SnailEnemy.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="TileHandler.cpp" />
     <ClCompile Include="TileObject.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="MathFunctions.h" />
     <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="SnailEnemy.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="TileHandler.h" />
     <ClInclude Include="TileObject.h" />

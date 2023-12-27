@@ -1,5 +1,4 @@
 #include "BoarEnemy.h"
-
 #include <iostream>
 
 BoarEnemy::BoarEnemy(Game* game):

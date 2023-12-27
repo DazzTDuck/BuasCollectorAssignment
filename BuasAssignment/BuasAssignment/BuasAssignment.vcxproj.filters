@@ -76,6 +76,9 @@
       <Filter>Source Files\Classes\Components</Filter>
     </ClCompile>
     <ClCompile Include="BoarEnemy.cpp">
+      <Filter>Source Files\Classes\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="SnailEnemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -126,6 +129,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BoarEnemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SnailEnemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

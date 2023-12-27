@@ -5,10 +5,10 @@
 #include <random>
 #include "BackgroundSprite.h"
 #include "BoarEnemy.h"
-#include "EnemyObject.h"
 #include "MathFunctions.h"
 #include "GameInput.h"
 #include "PlayerObject.h"
+#include "SnailEnemy.h"
 using namespace sf;
 
 //started 11/2
@@ -94,8 +94,8 @@ void Game::Start()
 					break;
 				case Snail:
 					//create snail enemy
-					EnemyObject* snailEnemy;
-					snailEnemy = new EnemyObject(this);
+					SnailEnemy* snailEnemy;
+					snailEnemy = new SnailEnemy(this);
 					snailEnemy->objectName = "Snail";
 					snailEnemy->objectPosition = { 16.f * j, 16.f * i };
 					snailEnemy->respawnLocation = snailEnemy->objectPosition;

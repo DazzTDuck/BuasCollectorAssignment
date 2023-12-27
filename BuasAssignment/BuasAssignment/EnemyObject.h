@@ -15,7 +15,7 @@ public:
 protected:
 	virtual void MoveSideToSide(float deltaTime);
 
-	float _enemySpeed;
+	float _enemySpeed = 1.f;
 	bool _moveLeft = true;
 	float _moveDirection = -1.f;
 
@@ -26,12 +26,5 @@ protected:
 	Animations _moveAnimation;
 	Animations _deathAnimation;
 	Animations _idleAnimation;
-
-private:
-	Animations _unhideAnimation;
-
-	bool _hidden = true;
-	bool _canShow = true;
-	float _sqrDistance = 250.f * 250.f; // 250 pixels
 };
 
